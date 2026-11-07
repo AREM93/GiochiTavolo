@@ -144,16 +144,6 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); ou
 .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c, var(--good)); flex: none; }
 .dot.wh { background: transparent; border: 2px dashed var(--white); }
 
-/* Theme chips */
-.chips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.chip {
-  display: flex; align-items: center; gap: 10px; padding: 12px 14px; min-height: 52px;
-  border-radius: 14px; border: 2px solid var(--line); background: var(--bg-2); text-align: left; font-weight: 600;
-}
-.chip .dot { width: 14px; height: 14px; }
-.chip[aria-pressed="true"] { border-color: var(--c); background: color-mix(in srgb, var(--c) 18%, var(--bg-2)); }
-.chip[aria-pressed="false"] { color: var(--muted); }
-.chip[aria-pressed="false"] .dot { opacity: .35; }
 .row-between { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 
 /* Toggle */
@@ -229,78 +219,20 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); ou
 <body>
 <main id="app" aria-live="polite"></main>
 
+<script src="parole.js"></script>
 <script>
-/* ===================== DATABASE PAROLE ===================== */
-const TEMI = {
-  cibo: { nome: "Cibo", colore: "--t-cibo", parole: [
-    "Pizza","Lasagna","Carbonara","Risotto","Tiramisù","Gelato","Cornetto","Panettone","Arancino","Cannolo",
-    "Parmigiano","Mozzarella","Prosciutto","Salame","Mortadella","Gnocchi","Ravioli","Tortellini","Polenta","Focaccia",
-    "Piadina","Bruschetta","Minestrone","Hamburger","Sushi","Kebab","Patatine fritte","Hot dog","Tacos","Paella",
-    "Cioccolato","Nutella","Pancake","Croissant","Frittata","Insalata","Banana","Anguria","Fragola","Melanzana",
-    "Peperone","Avocado","Popcorn","Biscotto","Ciambella","Ketchup","Maionese","Cotoletta","Spiedino","Bistecca"
-  ]},
-  ambienti: { nome: "Ambienti", colore: "--t-ambienti", parole: [
-    "Spiaggia","Montagna","Deserto","Foresta","Giungla","Ghiacciaio","Vulcano","Lago","Cascata","Grotta",
-    "Isola","Palude","Savana","Prateria","Scogliera","Cucina","Bagno","Camera da letto","Soggiorno","Cantina",
-    "Soffitta","Garage","Giardino","Ospedale","Scuola","Biblioteca","Museo","Cinema","Teatro","Discoteca",
-    "Supermercato","Aeroporto","Stazione","Palestra","Piscina","Stadio","Chiesa","Castello","Prigione","Ufficio",
-    "Ristorante","Bar","Farmacia","Zoo","Luna park","Campeggio","Nave da crociera","Sottomarino","Astronave","Fattoria"
-  ]},
-  citta: { nome: "Città", colore: "--t-citta", parole: [
-    "Roma","Milano","Napoli","Torino","Palermo","Firenze","Venezia","Bologna","Genova","Bari",
-    "Verona","Catania","Cagliari","Trieste","Perugia","Pisa","Siena","Lecce","Matera","Como",
-    "Parigi","Londra","Madrid","Barcellona","Berlino","Amsterdam","Vienna","Praga","Lisbona","Atene",
-    "Istanbul","Mosca","New York","Los Angeles","Las Vegas","Miami","Rio de Janeiro","Buenos Aires","Città del Messico","Tokyo",
-    "Pechino","Hong Kong","Singapore","Dubai","Il Cairo","Marrakech","Sydney","Bangkok","Toronto","San Francisco"
-  ]},
-  automobili: { nome: "Automobili", colore: "--t-auto", parole: [
-    "Fiat 500","Fiat Panda","Fiat Punto","Fiat Multipla","Lancia Ypsilon","Lancia Delta","Alfa Romeo Giulia","Alfa Romeo Giulietta","Ferrari","Lamborghini",
-    "Maserati","Bugatti","Porsche 911","Volkswagen Golf","Maggiolino","Volkswagen Polo","Audi A4","BMW Serie 3","Mercedes Classe A","Smart",
-    "Mini Cooper","Tesla","Toyota Yaris","Toyota Prius","Renault Clio","Peugeot 208","Citroën C3","Dacia Duster","Jeep","Land Rover",
-    "Range Rover","Volvo","Ford Fiesta","Ford Mustang","Chevrolet Camaro","Nissan Qashqai","Hyundai","Kia","Suzuki Swift","Opel Corsa",
-    "Seat Ibiza","Skoda Octavia","Mazda MX-5","Jaguar","Aston Martin","Rolls-Royce","Bentley","McLaren","Ape Piaggio","Hummer"
-  ]},
-  sport: { nome: "Sport", colore: "--t-sport", parole: [
-    "Calcio","Basket","Pallavolo","Tennis","Padel","Ping pong","Golf","Rugby","Baseball","Hockey su ghiaccio",
-    "Nuoto","Pallanuoto","Tuffi","Surf","Vela","Canottaggio","Sci","Snowboard","Pattinaggio","Curling",
-    "Ciclismo","Formula 1","MotoGP","Atletica","Maratona","Salto in alto","Lancio del peso","Boxe","Judo","Karate",
-    "Scherma","Lotta","Ginnastica artistica","Equitazione","Arrampicata","Paracadutismo","Bowling","Biliardo","Freccette","Scacchi",
-    "Badminton","Cricket","Football americano","Skateboard","Triathlon","Pesca","Tiro con l'arco","Crossfit","Yoga","Beach volley"
-  ]},
-  attori: { nome: "Attori", colore: "--t-attori", parole: [
-    "Roberto Benigni","Totò","Alberto Sordi","Sophia Loren","Marcello Mastroianni","Monica Bellucci","Pierfrancesco Favino","Checco Zalone","Carlo Verdone","Paola Cortellesi",
-    "Toni Servillo","Luca Argentero","Raoul Bova","Claudio Bisio","Christian De Sica","Massimo Boldi","Aldo Giovanni e Giacomo","Leonardo DiCaprio","Brad Pitt","Angelina Jolie",
-    "Johnny Depp","Tom Cruise","Tom Hanks","Julia Roberts","Meryl Streep","Robert De Niro","Al Pacino","Jim Carrey","Will Smith","Morgan Freeman",
-    "Scarlett Johansson","Jennifer Lawrence","Margot Robbie","Keanu Reeves","Sylvester Stallone","Arnold Schwarzenegger","Bruce Willis","George Clooney","Nicole Kidman","Zendaya",
-    "Ryan Gosling","Robert Downey Jr.","Charlie Chaplin","Marilyn Monroe","Audrey Hepburn","Jackie Chan","Dwayne Johnson","Emma Watson","Daniel Radcliffe","Johnny Stecchino"
-  ]},
-  oggetti: { nome: "Oggetti", colore: "--t-oggetti", parole: [
-    "Ombrello","Forbici","Martello","Cacciavite","Chiave","Lucchetto","Orologio","Occhiali","Portafoglio","Zaino",
-    "Valigia","Specchio","Spazzolino","Pettine","Phon","Lampadina","Candela","Accendino","Cuscino","Coperta",
-    "Sedia","Divano","Tavolo","Frigorifero","Lavatrice","Forno","Microonde","Frullatore","Moka","Padella",
-    "Forchetta","Bicchiere","Tazza","Telecomando","Televisore","Smartphone","Computer","Cuffie","Macchina fotografica","Chitarra",
-    "Pianoforte","Pallone","Bicicletta","Monopattino","Matita","Penna","Quaderno","Calcolatrice","Scopa","Aspirapolvere"
-  ]},
-  corpo: { nome: "Parti del corpo", colore: "--t-corpo", parole: [
-    "Testa","Capelli","Fronte","Sopracciglio","Ciglia","Occhio","Naso","Orecchio","Bocca","Labbra",
-    "Lingua","Dente","Mento","Guancia","Collo","Spalla","Braccio","Gomito","Polso","Mano",
-    "Dito","Pollice","Unghia","Petto","Pancia","Ombelico","Schiena","Fianco","Sedere","Gamba",
-    "Coscia","Ginocchio","Polpaccio","Caviglia","Tallone","Piede","Alluce","Cuore","Polmone","Stomaco",
-    "Fegato","Cervello","Rene","Scheletro","Muscolo","Pelle","Vena","Costola","Ascella","Nuca"
-  ]}
-};
-
 /* ===================== STATO ===================== */
 const AVATAR_COLORS = ["--t-cibo","--t-citta","--t-ambienti","--t-attori","--t-sport","--t-corpo","--t-oggetti","--t-auto","--t-citta","--t-cibo"];
 const MIN = 4, MAX = 10;
 
 function load(k, d) { try { const v = localStorage.getItem("ufakariu:" + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+function sessGet() { try { return JSON.parse(sessionStorage.getItem("ufakariu:usate") || "[]"); } catch (e) { return []; } }
+function sessSave() { try { sessionStorage.setItem("ufakariu:usate", JSON.stringify([...S.usate])); } catch (e) {} }
 function save(k, v) { try { localStorage.setItem("ufakariu:" + k, JSON.stringify(v)); } catch (e) {} }
 
 const S = {
   screen: "home",
   n: load("n", 5),
-  themes: load("themes", Object.keys(TEMI)),
   mode: load("mode", "simile"),   // "simile": l'impostore ha una parola diversa e non lo sa. "sa": sa di essere impostore e vede solo il tema
   names: load("names", []),
   nameIdx: 0,
@@ -309,7 +241,7 @@ const S = {
   alive: [], starter: 0,
   overlay: null, // {type, ...}
   winner: null,
-  used: load("used", []),
+  usate: new Set(sessGet()),   // parole già uscite in questa sessione di gioco
   timer: { left: 0, running: false, id: null }
 };
 
@@ -331,13 +263,14 @@ function dealRound() {
   if (white) roles[idx[1]] = "bianco";
   S.roles = roles;
 
-  const themeKey = pick(S.themes);
-  const pool = TEMI[themeKey].parole;
-  let fresh = pool.filter(w => !S.used.includes(w));
-  if (fresh.length < 2) { S.used = S.used.filter(w => !pool.includes(w)); fresh = pool.slice(); }
-  const [a, b] = shuffle(fresh);
-  S.theme = themeKey; S.wordC = a; S.wordI = b;
-  S.used = [...S.used, a, b].slice(-200); save("used", S.used);
+  // tema casuale; mai una parola già uscita in questa sessione
+  const libera = (cp) => !S.usate.has(cp.c.toLowerCase()) && !S.usate.has(cp.i.toLowerCase());
+  let temi = Object.keys(TEMI).filter(k => TEMI[k].coppie.some(libera));
+  if (!temi.length) { S.usate.clear(); temi = Object.keys(TEMI); } // tutte le 800 coppie usate: si ricomincia
+  const themeKey = pick(temi);
+  const coppia = pick(TEMI[themeKey].coppie.filter(libera));
+  S.theme = themeKey; S.wordC = coppia.c; S.wordI = coppia.i;
+  S.usate.add(coppia.c.toLowerCase()); S.usate.add(coppia.i.toLowerCase()); sessSave();
 
   S.alive = Array(n).fill(true);
   S.revealIdx = 0; S.flipped = false; S.winner = null;
@@ -439,10 +372,10 @@ V.setup = () => `
     <p class="sub" style="font-size:14px">${S.n >= 7 ? "Da 7 giocatori entra in gioco anche l'omino bianco: non ha nessuna parola e deve improvvisare." : "Fino a 6 giocatori c'è un solo impostore. Da 7 si aggiunge l'omino bianco."}</p>
   </div>
   <div class="panel">
-    <div class="row-between"><span class="label">Temi</span><button class="link" style="padding:0" data-act="all-themes">${S.themes.length === Object.keys(TEMI).length ? "Nessuno" : "Tutti"}</button></div>
-    <div class="chips">
-      ${Object.entries(TEMI).map(([k, t]) => `<button class="chip" style="--c:${themeColor(k)}" aria-pressed="${S.themes.includes(k)}" data-act="theme" data-k="${k}"><span class="dot"></span>${t.nome}</button>`).join("")}
-    </div>
+    <div class="row-between"><span class="label">Tema</span><span class="step">a sorpresa</span></div>
+    <p class="sub" style="font-size:14px">A ogni partita il gioco pesca un tema a caso. Le parole già uscite non tornano finché resta aperta la sessione.</p>
+    <div class="roles">${Object.keys(TEMI).map(k => `<span class="pill"><span class="dot" style="--c:${themeColor(k)}"></span>${TEMI[k].nome}</span>`).join("")}</div>
+    <p class="step">${S.usate.size / 2} di ${Object.values(TEMI).reduce((t, x) => t + x.coppie.length, 0)} coppie già usate</p>
   </div>
   <div class="panel">
     <span class="label">L'impostore…</span>
@@ -452,7 +385,7 @@ V.setup = () => `
     </div>
   </div>
   <div class="actions">
-    <button class="btn" data-act="go-names" ${S.themes.length ? "" : "disabled"}>${S.themes.length ? "Avanti: i nomi" : "Scegli almeno un tema"}</button>
+    <button class="btn" data-act="go-names">Avanti: i nomi</button>
   </div>
 </section>`;
 
@@ -675,14 +608,6 @@ document.addEventListener("click", (e) => {
     case "backdrop": if (e.target === el && S.overlay && S.overlay.type !== "outcome") { S.overlay = null; render(); } break;
     case "dec": S.n = Math.max(MIN, S.n - 1); save("n", S.n); render(); break;
     case "inc": S.n = Math.min(MAX, S.n + 1); save("n", S.n); render(); break;
-    case "theme": {
-      const k = el.dataset.k;
-      S.themes = S.themes.includes(k) ? S.themes.filter(x => x !== k) : [...S.themes, k];
-      save("themes", S.themes); render(); break;
-    }
-    case "all-themes":
-      S.themes = S.themes.length === Object.keys(TEMI).length ? [] : Object.keys(TEMI);
-      save("themes", S.themes); render(); break;
     case "mode": S.mode = el.dataset.k; save("mode", S.mode); render(); break;
     case "go-names": S.nameIdx = 0; go("names"); break;
     case "name-back":
