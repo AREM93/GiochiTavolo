@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UFAKARIU</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="theme-color" content="#1c1a2e">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Figtree:wght@400;600;800&display=swap">
+<style>
+/* Layout: one-screen party app, a single column card stack centred on a dark "living room at night" ground. */
+:root {
+  color-scheme: dark;
+  --bg: #1c1a2e;
+  --bg-2: #24223a;
+  --surface: #2d2a47;
+  --line: #3d3a5c;
+  --fg: #f4efe7;
+  --muted: #a8a2bf;
+  --accent: #f2a766;      /* apricot: main action */
+  --accent-ink: #2a1a0c;
+  --danger: #ee8a7a;      /* impostore */
+  --white: #f4efe7;       /* omino bianco */
+  --good: #8cc7a1;
+  --t-cibo: #f2a766;
+  --t-ambienti: #8cc7a1;
+  --t-citta: #7fb3e6;
+  --t-auto: #ee8a7a;
+  --t-sport: #e9c46a;
+  --t-attori: #b79ce8;
+  --t-oggetti: #6cc3c1;
+  --t-corpo: #e79bbe;
+  --font-display: "Bagel Fat One", "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --r: 18px;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg: #f3efe9; --bg-2: #ebe5f0; --surface: #ffffff; --line: #ddd6e6;
+    --fg: #231f38; --muted: #6b6582; --accent: #e08a45; --accent-ink: #ffffff;
+    --danger: #d4614f; --white: #231f38; --good: #4f9e6c;
+    --t-cibo: #e08a45; --t-ambienti: #5fa97a; --t-citta: #4f8fcf; --t-auto: #d4614f;
+    --t-sport: #c9a03a; --t-attori: #8f6fd0; --t-oggetti: #3ea3a1; --t-corpo: #cf6f9b;
+  }
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f3efe9; --bg-2: #ebe5f0; --surface: #ffffff; --line: #ddd6e6;
+  --fg: #231f38; --muted: #6b6582; --accent: #e08a45; --accent-ink: #ffffff;
+  --danger: #d4614f; --white: #231f38; --good: #4f9e6c;
+  --t-cibo: #e08a45; --t-ambienti: #5fa97a; --t-citta: #4f8fcf; --t-auto: #d4614f;
+  --t-sport: #c9a03a; --t-attori: #8f6fd0; --t-oggetti: #3ea3a1; --t-corpo: #cf6f9b;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image: radial-gradient(120% 60% at 50% -10%, var(--bg-2), var(--bg) 70%);
+  background-attachment: fixed;
+  color: var(--fg);
+  font: 16px/1.45 var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+}
+#app {
+  min-height: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.screen { display: flex; flex-direction: column; gap: 18px; flex: 1; animation: in .28s ease-out; }
+@keyframes in { from { transform: translateY(8px); opacity: .6; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* Top bar */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; }
+.brand { font-family: var(--font-display); font-size: 22px; letter-spacing: .02em; }
+.brand span:nth-child(1){color:var(--t-cibo)} .brand span:nth-child(2){color:var(--t-ambienti)}
+.brand span:nth-child(3){color:var(--t-citta)} .brand span:nth-child(4){color:var(--t-sport)}
+.brand span:nth-child(5){color:var(--t-attori)} .brand span:nth-child(6){color:var(--t-oggetti)}
+.brand span:nth-child(7){color:var(--t-corpo)} .brand span:nth-child(8){color:var(--t-auto)}
+.step { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); font-weight: 800; font-variant-numeric: tabular-nums; }
+
+/* Buttons */
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; min-height: 56px; padding: 14px 20px;
+  border-radius: 999px; font-weight: 800; font-size: 17px;
+  background: var(--accent); color: var(--accent-ink);
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--accent) 55%, #000);
+  transition: transform .08s, box-shadow .08s;
+}
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 color-mix(in srgb, var(--accent) 55%, #000); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.ghost { background: transparent; color: var(--fg); border: 2px solid var(--line); box-shadow: none; }
+.btn.danger { background: var(--danger); color: var(--accent-ink); box-shadow: 0 4px 0 color-mix(in srgb, var(--danger) 55%, #000); }
+.link { color: var(--muted); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; padding: 8px; }
+.icon-btn { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: var(--muted); border: 2px solid var(--line); font-weight: 800; }
+.actions { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+
+/* Home */
+.hero { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding-top: 4vh; }
+.logo {
+  font-family: var(--font-display); font-size: clamp(48px, 15vw, 72px); line-height: .95; letter-spacing: .01em;
+  display: flex; flex-wrap: wrap; justify-content: center;
+}
+.logo span { display: inline-block; transform: rotate(var(--rot)); }
+.tagline { color: var(--muted); max-width: 30ch; font-size: 17px; }
+.masks { display: flex; justify-content: center; gap: 10px; margin-block: 8px; }
+.mask { width: 46px; height: 58px; border-radius: 23px 23px 18px 18px; background: var(--c); position: relative; }
+.mask::before, .mask::after { content: ""; position: absolute; top: 20px; width: 9px; height: 12px; border-radius: 50%; background: var(--bg); }
+.mask::before { left: 11px; } .mask::after { right: 11px; }
+.mask.imp { background: var(--danger); transform: translateY(-8px) rotate(-6deg); }
+.mask.imp::before, .mask.imp::after { height: 6px; top: 23px; border-radius: 2px; }
+.mask.wh { background: transparent; border: 3px dashed var(--white); }
+.mask.wh::before, .mask.wh::after { display: none; }
+
+/* Panels */
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.label { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); font-weight: 800; }
+.h2 { font-family: var(--font-display); font-size: 30px; line-height: 1.05; font-weight: 400; }
+.sub { color: var(--muted); }
+
+/* Counter */
+.counter { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.counter button { width: 56px; height: 56px; border-radius: 50%; background: var(--bg-2); border: 2px solid var(--line); font-size: 28px; font-weight: 800; line-height: 1; }
+.counter button:disabled { opacity: .35; }
+.count { font-family: var(--font-display); font-size: 64px; line-height: 1; font-variant-numeric: tabular-nums; }
+.roles { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; background: var(--bg-2); border: 1px solid var(--line); }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c, var(--good)); flex: none; }
+.dot.wh { background: transparent; border: 2px dashed var(--white); }
+
+/* Theme chips */
+.chips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.chip {
+  display: flex; align-items: center; gap: 10px; padding: 12px 14px; min-height: 52px;
+  border-radius: 14px; border: 2px solid var(--line); background: var(--bg-2); text-align: left; font-weight: 600;
+}
+.chip .dot { width: 14px; height: 14px; }
+.chip[aria-pressed="true"] { border-color: var(--c); background: color-mix(in srgb, var(--c) 18%, var(--bg-2)); }
+.chip[aria-pressed="false"] { color: var(--muted); }
+.chip[aria-pressed="false"] .dot { opacity: .35; }
+.row-between { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+
+/* Toggle */
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: var(--bg-2); padding: 5px; border-radius: 14px; border: 1px solid var(--line); }
+.seg button { padding: 10px 8px; border-radius: 10px; font-weight: 600; font-size: 14px; color: var(--muted); line-height: 1.25; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--fg); box-shadow: 0 1px 0 var(--line); }
+
+/* Names */
+.avatar {
+  width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; flex: none;
+  background: var(--c); color: var(--accent-ink); font-weight: 800; font-size: 20px;
+}
+.avatar.lg { width: 84px; height: 84px; font-size: 34px; }
+.field { width: 100%; font: inherit; font-size: 22px; font-weight: 600; padding: 16px 18px; border-radius: 14px; border: 2px solid var(--line); background: var(--bg-2); color: var(--fg); }
+.field::placeholder { color: var(--muted); opacity: .7; }
+.err { color: var(--danger); font-weight: 600; font-size: 14px; min-height: 1.4em; }
+.done-list { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* Pass / reveal */
+.center { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; }
+.big-name { font-family: var(--font-display); font-size: clamp(38px, 11vw, 54px); line-height: 1; word-break: break-word; }
+.card-wrap { perspective: 1200px; width: 100%; }
+.card {
+  position: relative; width: 100%; aspect-ratio: 3 / 4; max-width: 100%; max-height: 52vh; margin: 0 auto;
+  transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2,.7,.2,1);
+}
+.card.flip { transform: rotateY(180deg); }
+.face {
+  position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 22px; text-align: center;
+}
+.face.front {
+  background: var(--surface); border: 2px solid var(--line);
+  background-image: repeating-linear-gradient(45deg, transparent 0 14px, color-mix(in srgb, var(--line) 50%, transparent) 14px 16px);
+}
+.face.back { transform: rotateY(180deg); background: var(--surface); border: 3px solid var(--c, var(--accent)); }
+.face .word { font-family: var(--font-display); font-size: clamp(34px, 11vw, 52px); line-height: 1.02; word-break: break-word; }
+.face .hint { color: var(--muted); font-size: 15px; max-width: 26ch; }
+.tap { font-weight: 800; font-size: 18px; }
+.tag { display: inline-block; padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; background: color-mix(in srgb, var(--c) 22%, transparent); color: var(--c); }
+
+/* Play */
+.players { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.pcard {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 16px;
+  background: var(--surface); border: 2px solid var(--line); text-align: left; min-width: 0;
+}
+.pcard .avatar { width: 40px; height: 40px; font-size: 16px; }
+.pcard .nm { font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.pcard .rl { font-size: 12px; color: var(--muted); font-weight: 600; }
+.pcard.out { opacity: .55; border-style: dashed; }
+.pcard.out .nm { text-decoration: line-through; }
+.pcard.first { border-color: var(--accent); }
+.starter { display: flex; align-items: center; gap: 14px; }
+.order { color: var(--muted); font-size: 14px; }
+
+/* Overlay */
+.overlay { position: fixed; inset: 0; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(4px); display: grid; place-items: center; padding: 20px max(16px, env(safe-area-inset-right, 0px)) 20px max(16px, env(safe-area-inset-left, 0px)); z-index: 20; }
+.sheet { width: 100%; max-width: 420px; background: var(--surface); border: 1px solid var(--line); border-radius: 24px; padding: 22px; display: flex; flex-direction: column; gap: 14px; animation: in .22s ease-out; max-height: 88vh; overflow-y: auto; }
+.rules { display: flex; flex-direction: column; gap: 10px; padding-left: 20px; margin: 0; }
+.rules li::marker { color: var(--accent); font-weight: 800; }
+
+/* Result */
+.result-title { font-family: var(--font-display); font-size: clamp(36px, 11vw, 50px); line-height: 1; }
+.words { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.wbox { background: var(--bg-2); border: 1px solid var(--line); border-radius: 14px; padding: 12px; min-width: 0; }
+.wbox b { display: block; font-size: 20px; word-break: break-word; }
+.timer { font-family: var(--font-display); font-size: 40px; font-variant-numeric: tabular-nums; line-height: 1; }
+.timer-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.timer-row .btn { width: auto; min-height: 44px; padding: 8px 18px; font-size: 15px; }
+</style>
+</head>
+<body>
+<main id="app" aria-live="polite"></main>
+
+<script>
+/* ===================== DATABASE PAROLE ===================== */
+const TEMI = {
+  cibo: { nome: "Cibo", colore: "--t-cibo", parole: [
+    "Pizza","Lasagna","Carbonara","Risotto","Tiramisù","Gelato","Cornetto","Panettone","Arancino","Cannolo",
+    "Parmigiano","Mozzarella","Prosciutto","Salame","Mortadella","Gnocchi","Ravioli","Tortellini","Polenta","Focaccia",
+    "Piadina","Bruschetta","Minestrone","Hamburger","Sushi","Kebab","Patatine fritte","Hot dog","Tacos","Paella",
+    "Cioccolato","Nutella","Pancake","Croissant","Frittata","Insalata","Banana","Anguria","Fragola","Melanzana",
+    "Peperone","Avocado","Popcorn","Biscotto","Ciambella","Ketchup","Maionese","Cotoletta","Spiedino","Bistecca"
+  ]},
+  ambienti: { nome: "Ambienti", colore: "--t-ambienti", parole: [
+    "Spiaggia","Montagna","Deserto","Foresta","Giungla","Ghiacciaio","Vulcano","Lago","Cascata","Grotta",
+    "Isola","Palude","Savana","Prateria","Scogliera","Cucina","Bagno","Camera da letto","Soggiorno","Cantina",
+    "Soffitta","Garage","Giardino","Ospedale","Scuola","Biblioteca","Museo","Cinema","Teatro","Discoteca",
+    "Supermercato","Aeroporto","Stazione","Palestra","Piscina","Stadio","Chiesa","Castello","Prigione","Ufficio",
+    "Ristorante","Bar","Farmacia","Zoo","Luna park","Campeggio","Nave da crociera","Sottomarino","Astronave","Fattoria"
+  ]},
+  citta: { nome: "Città", colore: "--t-citta", parole: [
+    "Roma","Milano","Napoli","Torino","Palermo","Firenze","Venezia","Bologna","Genova","Bari",
+    "Verona","Catania","Cagliari","Trieste","Perugia","Pisa","Siena","Lecce","Matera","Como",
+    "Parigi","Londra","Madrid","Barcellona","Berlino","Amsterdam","Vienna","Praga","Lisbona","Atene",
+    "Istanbul","Mosca","New York","Los Angeles","Las Vegas","Miami","Rio de Janeiro","Buenos Aires","Città del Messico","Tokyo",
+    "Pechino","Hong Kong","Singapore","Dubai","Il Cairo","Marrakech","Sydney","Bangkok","Toronto","San Francisco"
+  ]},
+  automobili: { nome: "Automobili", colore: "--t-auto", parole: [
+    "Fiat 500","Fiat Panda","Fiat Punto","Fiat Multipla","Lancia Ypsilon","Lancia Delta","Alfa Romeo Giulia","Alfa Romeo Giulietta","Ferrari","Lamborghini",
+    "Maserati","Bugatti","Porsche 911","Volkswagen Golf","Maggiolino","Volkswagen Polo","Audi A4","BMW Serie 3","Mercedes Classe A","Smart",
+    "Mini Cooper","Tesla","Toyota Yaris","Toyota Prius","Renault Clio","Peugeot 208","Citroën C3","Dacia Duster","Jeep","Land Rover",
+    "Range Rover","Volvo","Ford Fiesta","Ford Mustang","Chevrolet Camaro","Nissan Qashqai","Hyundai","Kia","Suzuki Swift","Opel Corsa",
+    "Seat Ibiza","Skoda Octavia","Mazda MX-5","Jaguar","Aston Martin","Rolls-Royce","Bentley","McLaren","Ape Piaggio","Hummer"
+  ]},
+  sport: { nome: "Sport", colore: "--t-sport", parole: [
+    "Calcio","Basket","Pallavolo","Tennis","Padel","Ping pong","Golf","Rugby","Baseball","Hockey su ghiaccio",
+    "Nuoto","Pallanuoto","Tuffi","Surf","Vela","Canottaggio","Sci","Snowboard","Pattinaggio","Curling",
+    "Ciclismo","Formula 1","MotoGP","Atletica","Maratona","Salto in alto","Lancio del peso","Boxe","Judo","Karate",
+    "Scherma","Lotta","Ginnastica artistica","Equitazione","Arrampicata","Paracadutismo","Bowling","Biliardo","Freccette","Scacchi",
+    "Badminton","Cricket","Football americano","Skateboard","Triathlon","Pesca","Tiro con l'arco","Crossfit","Yoga","Beach volley"
+  ]},
+  attori: { nome: "Attori", colore: "--t-attori", parole: [
+    "Roberto Benigni","Totò","Alberto Sordi","Sophia Loren","Marcello Mastroianni","Monica Bellucci","Pierfrancesco Favino","Checco Zalone","Carlo Verdone","Paola Cortellesi",
+    "Toni Servillo","Luca Argentero","Raoul Bova","Claudio Bisio","Christian De Sica","Massimo Boldi","Aldo Giovanni e Giacomo","Leonardo DiCaprio","Brad Pitt","Angelina Jolie",
+    "Johnny Depp","Tom Cruise","Tom Hanks","Julia Roberts","Meryl Streep","Robert De Niro","Al Pacino","Jim Carrey","Will Smith","Morgan Freeman",
+    "Scarlett Johansson","Jennifer Lawrence","Margot Robbie","Keanu Reeves","Sylvester Stallone","Arnold Schwarzenegger","Bruce Willis","George Clooney","Nicole Kidman","Zendaya",
+    "Ryan Gosling","Robert Downey Jr.","Charlie Chaplin","Marilyn Monroe","Audrey Hepburn","Jackie Chan","Dwayne Johnson","Emma Watson","Daniel Radcliffe","Johnny Stecchino"
+  ]},
+  oggetti: { nome: "Oggetti", colore: "--t-oggetti", parole: [
+    "Ombrello","Forbici","Martello","Cacciavite","Chiave","Lucchetto","Orologio","Occhiali","Portafoglio","Zaino",
+    "Valigia","Specchio","Spazzolino","Pettine","Phon","Lampadina","Candela","Accendino","Cuscino","Coperta",
+    "Sedia","Divano","Tavolo","Frigorifero","Lavatrice","Forno","Microonde","Frullatore","Moka","Padella",
+    "Forchetta","Bicchiere","Tazza","Telecomando","Televisore","Smartphone","Computer","Cuffie","Macchina fotografica","Chitarra",
+    "Pianoforte","Pallone","Bicicletta","Monopattino","Matita","Penna","Quaderno","Calcolatrice","Scopa","Aspirapolvere"
+  ]},
+  corpo: { nome: "Parti del corpo", colore: "--t-corpo", parole: [
+    "Testa","Capelli","Fronte","Sopracciglio","Ciglia","Occhio","Naso","Orecchio","Bocca","Labbra",
+    "Lingua","Dente","Mento","Guancia","Collo","Spalla","Braccio","Gomito","Polso","Mano",
+    "Dito","Pollice","Unghia","Petto","Pancia","Ombelico","Schiena","Fianco","Sedere","Gamba",
+    "Coscia","Ginocchio","Polpaccio","Caviglia","Tallone","Piede","Alluce","Cuore","Polmone","Stomaco",
+    "Fegato","Cervello","Rene","Scheletro","Muscolo","Pelle","Vena","Costola","Ascella","Nuca"
+  ]}
+};
+
+/* ===================== STATO ===================== */
+const AVATAR_COLORS = ["--t-cibo","--t-citta","--t-ambienti","--t-attori","--t-sport","--t-corpo","--t-oggetti","--t-auto","--t-citta","--t-cibo"];
+const MIN = 4, MAX = 10;
+
+function load(k, d) { try { const v = localStorage.getItem("ufakariu:" + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+function save(k, v) { try { localStorage.setItem("ufakariu:" + k, JSON.stringify(v)); } catch (e) {} }
+
+const S = {
+  screen: "home",
+  n: load("n", 5),
+  themes: load("themes", Object.keys(TEMI)),
+  mode: load("mode", "simile"),   // "simile": l'impostore ha una parola diversa e non lo sa. "sa": sa di essere impostore e vede solo il tema
+  names: load("names", []),
+  nameIdx: 0,
+  roles: [], theme: null, wordC: "", wordI: "",
+  revealIdx: 0, flipped: false,
+  alive: [], starter: 0,
+  overlay: null, // {type, ...}
+  winner: null,
+  used: load("used", []),
+  timer: { left: 0, running: false, id: null }
+};
+
+/* ===================== LOGICA ===================== */
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const rnd = (n) => Math.floor(Math.random() * n);
+const pick = (a) => a[rnd(a.length)];
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function roleSetup(n) { return n >= 7 ? { imp: 1, white: 1 } : { imp: 1, white: 0 }; }
+
+function dealRound() {
+  const n = S.n;
+  const { white } = roleSetup(n);
+  const roles = Array(n).fill("civile");
+  const idx = shuffle([...Array(n).keys()]);
+  roles[idx[0]] = "impostore";
+  if (white) roles[idx[1]] = "bianco";
+  S.roles = roles;
+
+  const themeKey = pick(S.themes);
+  const pool = TEMI[themeKey].parole;
+  let fresh = pool.filter(w => !S.used.includes(w));
+  if (fresh.length < 2) { S.used = S.used.filter(w => !pool.includes(w)); fresh = pool.slice(); }
+  const [a, b] = shuffle(fresh);
+  S.theme = themeKey; S.wordC = a; S.wordI = b;
+  S.used = [...S.used, a, b].slice(-200); save("used", S.used);
+
+  S.alive = Array(n).fill(true);
+  S.revealIdx = 0; S.flipped = false; S.winner = null;
+  // chi inizia: mai l'omino bianco
+  const candidates = [...Array(n).keys()].filter(i => roles[i] !== "bianco");
+  S.starter = pick(candidates);
+  stopTimer(); S.timer.left = 0;
+}
+
+function wordFor(i) {
+  const r = S.roles[i];
+  if (r === "bianco") return null;
+  if (r === "impostore") return S.mode === "simile" ? S.wordI : null;
+  return S.wordC;
+}
+
+function checkWinner() {
+  let civ = 0, bad = 0;
+  S.roles.forEach((r, i) => { if (!S.alive[i]) return; if (r === "civile") civ++; else bad++; });
+  if (bad === 0) return "civili";
+  if (civ <= bad) return "impostori";
+  return null;
+}
+
+/* ===================== TIMER ===================== */
+function startTimer(sec) {
+  stopTimer();
+  S.timer.left = sec; S.timer.running = true;
+  S.timer.id = setInterval(() => {
+    S.timer.left--;
+    const el = $("#timer"); if (el) el.textContent = fmt(S.timer.left);
+    if (S.timer.left <= 0) { stopTimer(); render(); }
+  }, 1000);
+  render();
+}
+function stopTimer() { if (S.timer.id) clearInterval(S.timer.id); S.timer.id = null; S.timer.running = false; }
+const fmt = (s) => `${Math.floor(Math.max(0, s) / 60)}:${String(Math.max(0, s) % 60).padStart(2, "0")}`;
+
+/* ===================== WAKE LOCK ===================== */
+let wake = null;
+async function keepAwake() { try { if ("wakeLock" in navigator && !wake) { wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", () => wake = null); } } catch (e) {} }
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && S.screen !== "home") keepAwake(); });
+
+/* ===================== VISTE ===================== */
+const brand = () => `<div class="brand" aria-label="UFAKARIU">${"UFAKARIU".split("").map(c => `<span>${c}</span>`).join("")}</div>`;
+const avatar = (i, cls = "") => `<div class="avatar ${cls}" style="--c:var(${AVATAR_COLORS[i % AVATAR_COLORS.length]})">${esc((S.names[i] || "?").trim().charAt(0).toUpperCase() || "?")}</div>`;
+const themeColor = (k) => `var(${TEMI[k].colore})`;
+
+function rolesSummary(n) {
+  const r = roleSetup(n);
+  const civ = n - r.imp - r.white;
+  return `<div class="roles">
+    <span class="pill"><span class="dot" style="--c:var(--good)"></span>${civ} civili</span>
+    <span class="pill"><span class="dot" style="--c:var(--danger)"></span>1 impostore</span>
+    ${r.white ? `<span class="pill"><span class="dot wh"></span>1 omino bianco</span>` : ""}
+  </div>`;
+}
+
+const V = {};
+
+V.home = () => `
+<section class="screen">
+  <div class="hero">
+    <div class="masks" aria-hidden="true">
+      <div class="mask" style="--c:var(--t-citta)"></div>
+      <div class="mask" style="--c:var(--t-ambienti)"></div>
+      <div class="mask imp"></div>
+      <div class="mask" style="--c:var(--t-sport)"></div>
+      <div class="mask wh"></div>
+    </div>
+    <h1 class="logo" aria-label="UFAKARIU">${"UFAKARIU".split("").map((c, i) => `<span style="--rot:${[-4,3,-2,4,-3,2,-4,3][i]}deg;color:var(${["--t-cibo","--t-ambienti","--t-citta","--t-sport","--t-attori","--t-oggetti","--t-corpo","--t-auto"][i]})">${c}</span>`).join("")}</h1>
+    <p class="tagline">Tutti hanno la stessa parola. Quasi tutti. Scoprite chi sta bluffando.</p>
+  </div>
+  <div class="panel">
+    <div class="row-between"><span class="label">Come si gioca</span><span class="step">4–10 giocatori</span></div>
+    <ol class="rules">
+      <li>Ognuno scrive il suo nome e, quando viene chiamato, guarda la sua parola di nascosto.</li>
+      <li>A turno si dice <b>una parola</b> che descrive la propria, senza svelarla.</li>
+      <li>Si discute e si vota chi eliminare. Trovate l'impostore prima che resti in pari con voi.</li>
+    </ol>
+  </div>
+  <div class="actions">
+    <button class="btn" data-act="go-setup">Nuova partita</button>
+    <button class="link" data-act="rules">Regole complete</button>
+  </div>
+</section>`;
+
+V.setup = () => `
+<section class="screen">
+  <div class="top"><button class="icon-btn" data-act="home" aria-label="Indietro">&larr;</button>${brand()}<span class="step">1 / 3</span></div>
+  <div class="panel">
+    <span class="label">Quanti giocatori?</span>
+    <div class="counter">
+      <button data-act="dec" aria-label="Meno giocatori" ${S.n <= MIN ? "disabled" : ""}>&minus;</button>
+      <div class="count" aria-live="polite">${S.n}</div>
+      <button data-act="inc" aria-label="Più giocatori" ${S.n >= MAX ? "disabled" : ""}>+</button>
+    </div>
+    ${rolesSummary(S.n)}
+    <p class="sub" style="font-size:14px">${S.n >= 7 ? "Da 7 giocatori entra in gioco anche l'omino bianco: non ha nessuna parola e deve improvvisare." : "Fino a 6 giocatori c'è un solo impostore. Da 7 si aggiunge l'omino bianco."}</p>
+  </div>
+  <div class="panel">
+    <div class="row-between"><span class="label">Temi</span><button class="link" style="padding:0" data-act="all-themes">${S.themes.length === Object.keys(TEMI).length ? "Nessuno" : "Tutti"}</button></div>
+    <div class="chips">
+      ${Object.entries(TEMI).map(([k, t]) => `<button class="chip" style="--c:${themeColor(k)}" aria-pressed="${S.themes.includes(k)}" data-act="theme" data-k="${k}"><span class="dot"></span>${t.nome}</button>`).join("")}
+    </div>
+  </div>
+  <div class="panel">
+    <span class="label">L'impostore…</span>
+    <div class="seg">
+      <button aria-pressed="${S.mode === "simile"}" data-act="mode" data-k="simile">ha una parola diversa<br><small>e non sa di esserlo</small></button>
+      <button aria-pressed="${S.mode === "sa"}" data-act="mode" data-k="sa">sa di essere l'impostore<br><small>e vede solo il tema</small></button>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="btn" data-act="go-names" ${S.themes.length ? "" : "disabled"}>${S.themes.length ? "Avanti: i nomi" : "Scegli almeno un tema"}</button>
+  </div>
+</section>`;
+
+V.names = () => {
+  const i = S.nameIdx;
+  const val = S.names[i] || "";
+  return `
+<section class="screen">
+  <div class="top"><button class="icon-btn" data-act="name-back" aria-label="Indietro">&larr;</button>${brand()}<span class="step">2 / 3</span></div>
+  <div class="panel">
+    <div class="row-between"><span class="label">Giocatore ${i + 1} di ${S.n}</span>${avatar(i)}</div>
+    <h2 class="h2">Scrivi il tuo nome</h2>
+    <form id="nameForm" autocomplete="off" style="display:flex;flex-direction:column;gap:8px">
+      <input class="field" id="nameInput" maxlength="16" placeholder="Es. Giulia" value="${esc(val)}" enterkeyhint="next" aria-label="Nome del giocatore ${i + 1}">
+      <div class="err" id="nameErr"></div>
+      <button class="btn" type="submit">${i + 1 < S.n ? "Avanti" : "Distribuisci le parole"}</button>
+    </form>
+  </div>
+  ${i > 0 ? `<div class="done-list">${S.names.slice(0, i).map((nm, j) => `<span class="pill"><span class="dot" style="--c:var(${AVATAR_COLORS[j % AVATAR_COLORS.length]})"></span>${esc(nm)}</span>`).join("")}</div>` : ""}
+  <p class="sub" style="text-align:center;font-size:14px;margin-top:auto">Scrivete il nome uno alla volta, poi passate il telefono.</p>
+</section>`;
+};
+
+V.pass = () => {
+  const i = S.revealIdx;
+  const name = S.names[i];
+  if (!S.flipped) return `
+<section class="screen">
+  <div class="top">${brand()}<span class="step">${i + 1} / ${S.n}</span></div>
+  <div class="center" style="margin-top:3vh">
+    <span class="label">Passa il telefono a</span>
+    ${avatar(i, "lg")}
+    <div class="big-name">${esc(name)}</div>
+    <p class="sub">Solo ${esc(name)} deve guardare lo schermo.</p>
+  </div>
+  <div class="card-wrap"><div class="card" data-act="flip" role="button" tabindex="0" aria-label="Tocca per vedere la tua parola">
+    <div class="face front"><span class="tap">Tocca per vedere</span><span class="hint">la tua parola segreta</span></div>
+    <div class="face back"></div>
+  </div></div>
+</section>`;
+
+  const r = S.roles[i];
+  const w = wordFor(i);
+  const t = TEMI[S.theme];
+  let back;
+  if (r === "bianco") back = `
+    <span class="tag" style="--c:var(--white)">Omino bianco</span>
+    <div class="word">Nessuna parola</div>
+    <p class="hint">Ascolta gli altri e fingi di saperla. Se ti eliminano puoi provare a indovinarla.</p>`;
+  else if (r === "impostore" && S.mode === "sa") back = `
+    <span class="tag" style="--c:var(--danger)">Impostore</span>
+    <div class="word">${esc(t.nome)}</div>
+    <p class="hint">Il tema è questo, la parola non la conosci. Mimetizzati.</p>`;
+  else back = `
+    <span class="tag" style="--c:${themeColor(S.theme)}">${esc(t.nome)}</span>
+    <div class="word">${esc(w)}</div>
+    <p class="hint">Memorizzala. Non dirla a nessuno.</p>`;
+
+  return `
+<section class="screen">
+  <div class="top">${brand()}<span class="step">${i + 1} / ${S.n}</span></div>
+  <div class="center"><span class="label">La parola di</span><div class="big-name" style="font-size:34px">${esc(name)}</div></div>
+  <div class="card-wrap"><div class="card" id="theCard">
+    <div class="face front"></div>
+    <div class="face back" style="--c:${r === "bianco" ? "var(--white)" : r === "impostore" && S.mode === "sa" ? "var(--danger)" : themeColor(S.theme)}">${back}</div>
+  </div></div>
+  <div class="actions">
+    <button class="btn" data-act="next-reveal">${i + 1 < S.n ? "Ho visto, nascondi" : "Ho visto, si gioca"}</button>
+  </div>
+</section>`;
+};
+
+V.play = () => {
+  const n = S.n;
+  const order = [...Array(n).keys()].map(k => (S.starter + k) % n).filter(i => S.alive[i]);
+  const t = TEMI[S.theme];
+  return `
+<section class="screen">
+  <div class="top">${brand()}<span class="tag" style="--c:${themeColor(S.theme)}">${esc(t.nome)}</span></div>
+  <div class="panel">
+    <span class="label">Inizia</span>
+    <div class="starter">${avatar(order[0])}<div style="min-width:0"><div class="h2" style="font-size:26px;word-break:break-word">${esc(S.names[order[0]])}</div>
+    <p class="order">Poi: ${order.slice(1).map(i => esc(S.names[i])).join(" → ")}</p></div></div>
+    <div class="timer-row">
+      <div><span class="label">Discussione</span><div class="timer" id="timer">${fmt(S.timer.left)}</div></div>
+      ${S.timer.running ? `<button class="btn ghost" data-act="timer-stop">Ferma</button>` : `<button class="btn ghost" data-act="timer-start">Avvia 2:00</button>`}
+    </div>
+  </div>
+  <div class="row-between"><span class="label">Votate: tocca chi eliminare</span><span class="step">${S.alive.filter(Boolean).length} in gioco</span></div>
+  <div class="players">
+    ${S.names.map((nm, i) => {
+      const out = !S.alive[i];
+      const rl = out ? (S.roles[i] === "civile" ? "Civile" : S.roles[i] === "impostore" ? "Impostore" : "Omino bianco") : "In gioco";
+      return `<button class="pcard ${out ? "out" : ""} ${i === order[0] && !out ? "first" : ""}" data-act="vote" data-i="${i}" ${out ? "disabled" : ""}>
+        ${avatar(i)}<div style="min-width:0"><div class="nm">${esc(nm)}</div><div class="rl">${rl}</div></div></button>`;
+    }).join("")}
+  </div>
+  <div class="actions">
+    <button class="btn ghost" data-act="ask-reveal">Svela tutto e termina</button>
+  </div>
+</section>`;
+};
+
+V.end = () => {
+  const w = S.winner;
+  const title = w === "civili" ? "Vincono i civili" : w === "impostori" ? "Vince l'impostore" : w === "bianco" ? "Vince l'omino bianco" : "Partita svelata";
+  const col = w === "civili" ? "var(--good)" : w === "bianco" ? "var(--white)" : w === "impostori" ? "var(--danger)" : "var(--accent)";
+  const roleName = (r) => r === "civile" ? "Civile" : r === "impostore" ? "Impostore" : "Omino bianco";
+  return `
+<section class="screen">
+  <div class="top">${brand()}<span class="tag" style="--c:${themeColor(S.theme)}">${esc(TEMI[S.theme].nome)}</span></div>
+  <div class="center" style="margin-top:2vh">
+    <span class="label">Fine partita</span>
+    <div class="result-title" style="color:${col}">${title}</div>
+  </div>
+  <div class="words">
+    <div class="wbox"><span class="label">Parola dei civili</span><b>${esc(S.wordC)}</b></div>
+    <div class="wbox"><span class="label">Impostore</span><b>${S.mode === "simile" ? esc(S.wordI) : "Solo il tema"}</b></div>
+  </div>
+  <div class="players">
+    ${S.names.map((nm, i) => `<div class="pcard ${S.roles[i] !== "civile" ? "first" : ""}" style="${S.roles[i] === "impostore" ? "border-color:var(--danger)" : S.roles[i] === "bianco" ? "border-color:var(--white);border-style:dashed" : ""}">
+      ${avatar(i)}<div style="min-width:0"><div class="nm">${esc(nm)}</div><div class="rl">${roleName(S.roles[i])}${S.alive[i] ? "" : " · eliminato"}</div></div></div>`).join("")}
+  </div>
+  <div class="actions">
+    <button class="btn" data-act="replay">Rigioca con gli stessi giocatori</button>
+    <button class="btn ghost" data-act="go-setup">Cambia giocatori o temi</button>
+  </div>
+</section>`;
+};
+
+/* Overlays */
+const O = {};
+O.rules = () => `
+<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rt">
+  <h2 class="h2" id="rt">Regole</h2>
+  <ol class="rules">
+    <li><b>Preparazione.</b> Da 4 a 10 giocatori. Fino a 6 c'è 1 impostore; da 7 in su ci sono 1 impostore e 1 omino bianco.</li>
+    <li><b>Le parole.</b> I civili ricevono tutti la stessa parola. L'impostore ne riceve una diversa dello stesso tema (oppure solo il tema, se scegliete questa variante). L'omino bianco non riceve niente.</li>
+    <li><b>Il giro.</b> Partendo da chi indica l'app, ognuno dice una sola parola o una breve frase legata alla sua parola, senza dirla.</li>
+    <li><b>Il voto.</b> Dopo uno o due giri discutete e votate chi eliminare. Toccate il suo nome per scoprire il ruolo.</li>
+    <li><b>L'omino bianco.</b> Se viene eliminato può provare a indovinare la parola dei civili: se ci riesce vince lui.</li>
+    <li><b>Chi vince.</b> I civili vincono se eliminano impostore e omino bianco. L'impostore vince se resta in gioco quando i civili non sono più di lui e dei suoi complici.</li>
+  </ol>
+  <button class="btn" data-act="close">Ho capito</button>
+</div>`;
+
+O.vote = () => {
+  const i = S.overlay.i;
+  return `
+<div class="sheet" role="dialog" aria-modal="true">
+  <div class="starter">${avatar(i)}<h2 class="h2" style="font-size:26px;word-break:break-word">Eliminare ${esc(S.names[i])}?</h2></div>
+  <p class="sub">Fatelo solo se la maggioranza è d'accordo. Il ruolo verrà svelato a tutti.</p>
+  <button class="btn danger" data-act="eliminate" data-i="${i}">Sì, elimina</button>
+  <button class="btn ghost" data-act="close">Annulla</button>
+</div>`;
+};
+
+O.outcome = () => {
+  const i = S.overlay.i, r = S.roles[i];
+  const txt = r === "civile" ? ["Era un civile", "var(--good)", "Avete eliminato un innocente. La partita continua."]
+    : r === "impostore" ? ["Era l'impostore!", "var(--danger)", S.mode === "simile" ? `La sua parola era «${esc(S.wordI)}».` : "Ben scovato."]
+    : ["Era l'omino bianco", "var(--white)", "Ora può provare a indovinare la parola dei civili, ad alta voce."];
+  return `
+<div class="sheet" role="dialog" aria-modal="true">
+  <span class="label">${esc(S.names[i])}</span>
+  <h2 class="h2" style="color:${txt[1]}">${txt[0]}</h2>
+  <p class="sub">${txt[2]}</p>
+  ${r === "bianco" ? `
+    <button class="btn" data-act="white-guess" data-ok="1">Ha indovinato</button>
+    <button class="btn ghost" data-act="white-guess" data-ok="0">Ha sbagliato</button>`
+  : `<button class="btn" data-act="after-out">Continua</button>`}
+</div>`;
+};
+
+O.confirmReveal = () => `
+<div class="sheet" role="dialog" aria-modal="true">
+  <h2 class="h2">Svelare tutto?</h2>
+  <p class="sub">Mostra tutti i ruoli e le parole e chiude la partita.</p>
+  <button class="btn" data-act="reveal-all">Sì, svela</button>
+  <button class="btn ghost" data-act="close">Continua a giocare</button>
+</div>`;
+
+/* ===================== RENDER ===================== */
+function render() {
+  const app = $("#app");
+  app.innerHTML = V[S.screen]() + (S.overlay ? `<div class="overlay" data-act="backdrop">${O[S.overlay.type]()}</div>` : "");
+  if (S.screen === "names") {
+    const inp = $("#nameInput");
+    if (inp) { inp.focus(); inp.select(); }
+    $("#nameForm").addEventListener("submit", (e) => { e.preventDefault(); submitName(); });
+  }
+  if (S.screen === "pass" && S.flipped) requestAnimationFrame(() => requestAnimationFrame(() => { const c = $("#theCard"); if (c) c.classList.add("flip"); }));
+}
+
+function go(screen) { S.screen = screen; S.overlay = null; render(); window.scrollTo(0, 0); }
+
+function submitName() {
+  const inp = $("#nameInput"), err = $("#nameErr");
+  const v = inp.value.trim().replace(/\s+/g, " ");
+  if (!v) { err.textContent = "Scrivi un nome per continuare."; return; }
+  const dup = S.names.slice(0, S.nameIdx).some(x => x.toLowerCase() === v.toLowerCase());
+  if (dup) { err.textContent = "Questo nome c'è già. Aggiungi un'iniziale."; return; }
+  S.names[S.nameIdx] = v;
+  if (S.nameIdx + 1 < S.n) { S.nameIdx++; render(); return; }
+  S.names = S.names.slice(0, S.n);
+  save("names", S.names);
+  dealRound(); keepAwake();
+  go("pass");
+}
+
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-act]");
+  if (!el) return;
+  const act = el.dataset.act;
+  switch (act) {
+    case "home": go("home"); break;
+    case "go-setup": stopTimer(); go("setup"); break;
+    case "rules": S.overlay = { type: "rules" }; render(); break;
+    case "close": S.overlay = null; render(); break;
+    case "backdrop": if (e.target === el && S.overlay && S.overlay.type !== "outcome") { S.overlay = null; render(); } break;
+    case "dec": S.n = Math.max(MIN, S.n - 1); save("n", S.n); render(); break;
+    case "inc": S.n = Math.min(MAX, S.n + 1); save("n", S.n); render(); break;
+    case "theme": {
+      const k = el.dataset.k;
+      S.themes = S.themes.includes(k) ? S.themes.filter(x => x !== k) : [...S.themes, k];
+      save("themes", S.themes); render(); break;
+    }
+    case "all-themes":
+      S.themes = S.themes.length === Object.keys(TEMI).length ? [] : Object.keys(TEMI);
+      save("themes", S.themes); render(); break;
+    case "mode": S.mode = el.dataset.k; save("mode", S.mode); render(); break;
+    case "go-names": S.nameIdx = 0; go("names"); break;
+    case "name-back":
+      if (S.nameIdx > 0) { const inp = $("#nameInput"); if (inp) S.names[S.nameIdx] = inp.value.trim(); S.nameIdx--; render(); }
+      else go("setup");
+      break;
+    case "flip": S.flipped = true; render(); break;
+    case "next-reveal":
+      S.flipped = false;
+      if (S.revealIdx + 1 < S.n) { S.revealIdx++; render(); }
+      else go("play");
+      break;
+    case "timer-start": startTimer(120); break;
+    case "timer-stop": stopTimer(); render(); break;
+    case "vote": S.overlay = { type: "vote", i: +el.dataset.i }; render(); break;
+    case "eliminate": {
+      const i = +el.dataset.i;
+      S.alive[i] = false;
+      S.overlay = { type: "outcome", i }; render(); break;
+    }
+    case "white-guess":
+      if (el.dataset.ok === "1") { S.winner = "bianco"; stopTimer(); go("end"); }
+      else afterOut();
+      break;
+    case "after-out": afterOut(); break;
+    case "ask-reveal": S.overlay = { type: "confirmReveal" }; render(); break;
+    case "reveal-all": S.winner = null; stopTimer(); go("end"); break;
+    case "replay": dealRound(); go("pass"); break;
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches('[data-act="flip"]')) { e.preventDefault(); S.flipped = true; render(); }
+  if (e.key === "Escape" && S.overlay && S.overlay.type !== "outcome") { S.overlay = null; render(); }
+});
+
+function afterOut() {
+  const w = checkWinner();
+  if (w) { S.winner = w; stopTimer(); go("end"); }
+  else { S.overlay = null; render(); }
+}
+
+render();
+</script>
+</body>
+</html>
