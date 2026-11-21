@@ -149,6 +149,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); ou
 /* Toggle */
 .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: var(--bg-2); padding: 5px; border-radius: 14px; border: 1px solid var(--line); }
 .seg button { padding: 10px 8px; border-radius: 10px; font-weight: 600; font-size: 14px; color: var(--muted); line-height: 1.25; }
+.seg.seg-col { grid-template-columns: 1fr; }
 .seg button[aria-pressed="true"] { background: var(--surface); color: var(--fg); box-shadow: 0 1px 0 var(--line); }
 
 /* Names */
@@ -233,7 +234,11 @@ function save(k, v) { try { localStorage.setItem("ufakariu:" + k, JSON.stringify
 const S = {
   screen: "home",
   n: load("n", 5),
-  mode: load("mode", "simile"),   // "simile": l'impostore ha una parola diversa e non lo sa. "sa": sa di essere impostore e vede solo il tema
+  // "simile": l'impostore ha una parola diversa e non sa di esserlo
+  // "tema":   sa di essere l'impostore e vede solo il tema
+  // "buio":   sa di essere l'impostore e non conosce né la parola né il tema
+  mode: ({ sa: "tema" })[load("mode", "simile")] || load("mode", "simile"),
+  livello: load("livello", "facile"),   // "facile" | "difficile"
   names: load("names", []),
   nameIdx: 0,
   roles: [], theme: null, wordC: "", wordI: "",
@@ -265,10 +270,11 @@ function dealRound() {
 
   // tema casuale; mai una parola già uscita in questa sessione
   const libera = (cp) => !S.usate.has(cp.c.toLowerCase()) && !S.usate.has(cp.i.toLowerCase());
-  let temi = Object.keys(TEMI).filter(k => TEMI[k].coppie.some(libera));
-  if (!temi.length) { S.usate.clear(); temi = Object.keys(TEMI); } // tutte le 800 coppie usate: si ricomincia
+  const lv = S.livello;
+  let temi = Object.keys(TEMI).filter(k => TEMI[k][lv].some(libera));
+  if (!temi.length) { S.usate.clear(); temi = Object.keys(TEMI); } // livello esaurito: si ricomincia
   const themeKey = pick(temi);
-  const coppia = pick(TEMI[themeKey].coppie.filter(libera));
+  const coppia = pick(TEMI[themeKey][lv].filter(libera));
   S.theme = themeKey; S.wordC = coppia.c; S.wordI = coppia.i;
   S.usate.add(coppia.c.toLowerCase()); S.usate.add(coppia.i.toLowerCase()); sessSave();
 
@@ -375,14 +381,25 @@ V.setup = () => `
     <div class="row-between"><span class="label">Tema</span><span class="step">a sorpresa</span></div>
     <p class="sub" style="font-size:14px">A ogni partita il gioco pesca un tema a caso. Le parole già uscite non tornano finché resta aperta la sessione.</p>
     <div class="roles">${Object.keys(TEMI).map(k => `<span class="pill"><span class="dot" style="--c:${themeColor(k)}"></span>${TEMI[k].nome}</span>`).join("")}</div>
-    <p class="step">${S.usate.size / 2} di ${Object.values(TEMI).reduce((t, x) => t + x.coppie.length, 0)} coppie già usate</p>
+    <p class="step">${Object.keys(TEMI).reduce((t, k) => t + TEMI[k][S.livello].filter(cp => S.usate.has(cp.c.toLowerCase())).length, 0)} di ${Object.keys(TEMI).reduce((t, k) => t + TEMI[k][S.livello].length, 0)} coppie ${S.livello === "facile" ? "facili" : "difficili"} già usate</p>
   </div>
   <div class="panel">
     <span class="label">L'impostore…</span>
-    <div class="seg">
-      <button aria-pressed="${S.mode === "simile"}" data-act="mode" data-k="simile">ha una parola diversa<br><small>e non sa di esserlo</small></button>
-      <button aria-pressed="${S.mode === "sa"}" data-act="mode" data-k="sa">sa di essere l'impostore<br><small>e vede solo il tema</small></button>
+    <div class="seg seg-col">
+      <button aria-pressed="${S.mode === "simile"}" data-act="mode" data-k="simile">ha una parola diversa<br><small>e non sa di essere l'impostore</small></button>
+      <button aria-pressed="${S.mode === "tema"}" data-act="mode" data-k="tema">sa di essere l'impostore<br><small>non sa la parola, vede solo il tema</small></button>
+      <button aria-pressed="${S.mode === "buio"}" data-act="mode" data-k="buio">sa di essere l'impostore<br><small>non sa né la parola né il tema</small></button>
     </div>
+  </div>
+  <div class="panel">
+    <div class="row-between"><span class="label">Difficoltà</span><span class="step">per sgamare l'impostore</span></div>
+    <div class="seg">
+      <button aria-pressed="${S.livello === "facile"}" data-act="livello" data-k="facile">Facile<br><small>parole lontane</small></button>
+      <button aria-pressed="${S.livello === "difficile"}" data-act="livello" data-k="difficile">Difficile<br><small>parole quasi uguali</small></button>
+    </div>
+    <p class="sub" style="font-size:14px">${S.mode === "simile"
+      ? (S.livello === "facile" ? "Esempio: i civili hanno «Ribollita», l'impostore «Churros». Si nota presto." : "Esempio: i civili hanno «Pizza», l'impostore «Focaccia». Bisogna ascoltare bene.")
+      : (S.livello === "facile" ? "Parole semplici e conosciute: l'impostore fatica a stare dietro alle descrizioni." : "Parole più ricercate: anche i civili devono stare attenti a cosa dicono.")}</p>
   </div>
   <div class="actions">
     <button class="btn" data-act="go-names">Avanti: i nomi</button>
@@ -435,7 +452,11 @@ V.pass = () => {
     <span class="tag" style="--c:var(--white)">Omino bianco</span>
     <div class="word">Nessuna parola</div>
     <p class="hint">Ascolta gli altri e fingi di saperla. Se ti eliminano puoi provare a indovinarla.</p>`;
-  else if (r === "impostore" && S.mode === "sa") back = `
+  else if (r === "impostore" && S.mode === "buio") back = `
+    <span class="tag" style="--c:var(--danger)">Impostore</span>
+    <div class="word">???</div>
+    <p class="hint">Non conosci né la parola né il tema. Ascolta bene gli altri e bluffa.</p>`;
+  else if (r === "impostore" && S.mode === "tema") back = `
     <span class="tag" style="--c:var(--danger)">Impostore</span>
     <div class="word">${esc(t.nome)}</div>
     <p class="hint">Il tema è questo, la parola non la conosci. Mimetizzati.</p>`;
@@ -450,7 +471,7 @@ V.pass = () => {
   <div class="center"><span class="label">La parola di</span><div class="big-name" style="font-size:34px">${esc(name)}</div></div>
   <div class="card-wrap"><div class="card" id="theCard">
     <div class="face front"></div>
-    <div class="face back" style="--c:${r === "bianco" ? "var(--white)" : r === "impostore" && S.mode === "sa" ? "var(--danger)" : themeColor(S.theme)}">${back}</div>
+    <div class="face back" style="--c:${r === "bianco" ? "var(--white)" : r === "impostore" && S.mode !== "simile" ? "var(--danger)" : themeColor(S.theme)}">${back}</div>
   </div></div>
   <div class="actions">
     <button class="btn" data-act="next-reveal">${i + 1 < S.n ? "Ho visto, nascondi" : "Ho visto, si gioca"}</button>
@@ -464,7 +485,7 @@ V.play = () => {
   const t = TEMI[S.theme];
   return `
 <section class="screen">
-  <div class="top">${brand()}<span class="tag" style="--c:${themeColor(S.theme)}">${esc(t.nome)}</span></div>
+  <div class="top">${brand()}${S.mode === "buio" ? `<span class="tag" style="--c:var(--muted)">Tema segreto</span>` : `<span class="tag" style="--c:${themeColor(S.theme)}">${esc(t.nome)}</span>`}</div>
   <div class="panel">
     <span class="label">Inizia</span>
     <div class="starter">${avatar(order[0])}<div style="min-width:0"><div class="h2" style="font-size:26px;word-break:break-word">${esc(S.names[order[0]])}</div>
@@ -503,7 +524,7 @@ V.end = () => {
   </div>
   <div class="words">
     <div class="wbox"><span class="label">Parola dei civili</span><b>${esc(S.wordC)}</b></div>
-    <div class="wbox"><span class="label">Impostore</span><b>${S.mode === "simile" ? esc(S.wordI) : "Solo il tema"}</b></div>
+    <div class="wbox"><span class="label">Impostore</span><b>${S.mode === "simile" ? esc(S.wordI) : S.mode === "tema" ? "Solo il tema" : "Niente"}</b></div>
   </div>
   <div class="players">
     ${S.names.map((nm, i) => `<div class="pcard ${S.roles[i] !== "civile" ? "first" : ""}" style="${S.roles[i] === "impostore" ? "border-color:var(--danger)" : S.roles[i] === "bianco" ? "border-color:var(--white);border-style:dashed" : ""}">
@@ -523,7 +544,8 @@ O.rules = () => `
   <h2 class="h2" id="rt">Regole</h2>
   <ol class="rules">
     <li><b>Preparazione.</b> Da 4 a 10 giocatori. Fino a 6 c'è 1 impostore; da 7 in su ci sono 1 impostore e 1 omino bianco.</li>
-    <li><b>Le parole.</b> I civili ricevono tutti la stessa parola. L'impostore ne riceve una diversa dello stesso tema (oppure solo il tema, se scegliete questa variante). L'omino bianco non riceve niente.</li>
+    <li><b>Le parole.</b> I civili ricevono tutti la stessa parola. L'impostore, a seconda della modalità, riceve una parola diversa ma collegata, oppure solo il tema, oppure niente del tutto.</li>
+    <li><b>Difficoltà.</b> In <b>facile</b> la parola dell'impostore è lontana da quella dei civili e si sgama presto. In <b>difficile</b> le due parole sono quasi uguali. L'omino bianco non riceve niente.</li>
     <li><b>Il giro.</b> Partendo da chi indica l'app, ognuno dice una sola parola o una breve frase legata alla sua parola, senza dirla.</li>
     <li><b>Il voto.</b> Dopo uno o due giri discutete e votate chi eliminare. Toccate il suo nome per scoprire il ruolo.</li>
     <li><b>L'omino bianco.</b> Se viene eliminato può provare a indovinare la parola dei civili: se ci riesce vince lui.</li>
@@ -609,6 +631,7 @@ document.addEventListener("click", (e) => {
     case "dec": S.n = Math.max(MIN, S.n - 1); save("n", S.n); render(); break;
     case "inc": S.n = Math.min(MAX, S.n + 1); save("n", S.n); render(); break;
     case "mode": S.mode = el.dataset.k; save("mode", S.mode); render(); break;
+    case "livello": S.livello = el.dataset.k; save("livello", S.livello); render(); break;
     case "go-names": S.nameIdx = 0; go("names"); break;
     case "name-back":
       if (S.nameIdx > 0) { const inp = $("#nameInput"); if (inp) S.names[S.nameIdx] = inp.value.trim(); S.nameIdx--; render(); }

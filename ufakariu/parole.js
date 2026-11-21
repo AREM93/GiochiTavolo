@@ -1,8 +1,11 @@
 /* UFAKARIU – database parole.
    Ogni riga è una coppia "parola dei civili|parola dell'impostore".
-   Per tema: 100 coppie = 100 parole per i civili + 100 parole per l'impostore. */
+   Per ogni tema ci sono due livelli da 150 coppie ciascuno (300 coppie = 600 parole per tema):
+   - difficile: la parola dell'impostore è molto simile a quella dei civili (difficile sgamarlo)
+   - facile: la parola dell'impostore è lontana da quella dei civili (facile sgamarlo) */
 const TEMI = {
-cibo: { nome: "Cibo", colore: "--t-cibo", coppie: `
+cibo: { nome: "Cibo", colore: "--t-cibo",
+difficile: `
 Pizza|Focaccia
 Lasagna|Cannelloni
 Carbonara|Amatriciana
@@ -103,8 +106,211 @@ Cantucci|Amaretti
 Pastiera|Colomba
 Ramen|Pho
 Fonduta|Raclette
+Tagliatelle|Pappardelle
+Linguine|Trenette
+Maccheroni|Paccheri
+Cavatelli|Strozzapreti
+Tortelloni|Agnolotti
+Cappelletti|Anolini
+Bresaola|Carpaccio
+Coppa|Pancetta
+Lardo|Guanciale
+Wurstel|Cotechino
+Zampone|Porchetta
+Fontina|Emmental
+Taleggio|Asiago
+Scamorza|Provola
+Mascarpone|Formaggio spalmabile
+Feta|Caprino
+Grana Padano|Groviera
+Taralli|Crackers
+Fette biscottate|Gallette di riso
+Cereali|Muesli
+Plumcake|Ciambellone
+Babà|Savarin
+Cassata|Semifreddo
+Torrone|Croccante
+Meringa|Pavlova
+Zabaione|Crema pasticcera
+Bombolone|Graffa
+Frappe|Castagnole
+Struffoli|Cicerchiata
+Macedonia|Frullato
+Smoothie|Milkshake
+Sorbetto|Ghiacciolo
+Pistacchio|Nocciola
+Mandorla|Noce
+Castagna|Pinolo
+Pompelmo|Arancia rossa
+Papaya|Frutto della passione
+Melagrana|Litchi
+Cachi|Ribes
+Mora|Gelso
+Fiori di zucca|Carciofi
+Asparagi|Fagiolini
+Funghi porcini|Champignon
+Tartufo|Finferli
+Cavolo|Verza
+Radicchio|Indivia
+Lattuga|Valeriana
+Porro|Erba cipollina
+Basilico|Prezzemolo
+Rosmarino|Salvia
+`,
+facile: `
+Pasta e fagioli|Banana split
+Ribollita|Churros
+Pappa al pomodoro|Cupcake
+Cacio e pepe|Macarons
+Gricia|Strudel
+Pasta alla Norma|Poke
+Spaghetti alle vongole|Torta di mele
+Pizza fritta|Mousse al cioccolato
+Calzone|Ceviche
+Panzerotto|Affogato al caffè
+Sfincione|Tempura
+Puccia|Zucchero filato
+Friselle|Gyoza
+Olive ascolane|Torta Sacher
+Mozzarella in carrozza|Pad thai
+Frittelle di mele|Ostriche
+Parmigiana|Liquirizia
+Peperonata|Marshmallow
+Caponata|Lecca-lecca
+Ratatouille|Gianduiotto
+Vitello tonnato|Mentine
+Ossobuco|Confetti
+Saltimbocca|Pralina
+Involtini|Uovo di Pasqua
+Brasato|Ferrero Rocher
+Bollito misto|Éclair
+Spezzatino|Millefoglie
+Gulasch|Cannoncini
+Polpettone|Pasticciotto
+Club sandwich|Seadas
+Bagel|Torta della nonna
+Ciabatta|Crumble
+Baguette|Tarte tatin
+Pane carasau|Baklava
+Tigella|Kefir
+Gnocco fritto|Tè freddo
+Uova strapazzate|Limonata
+Uova alla coque|Gazzosa
+Bacon|Chinotto
+Salmone affumicato|Energy drink
+Caviale|Sidro
+Granchio|Grappa
+Scampi|Limoncello
+Seppie|Amaro
+Orata|Sambuca
+Branzino|Whisky
+Trota|Vodka
+Pesce spada|Rum
+Sgombro|Gin tonic
+Onigiri|Negroni
+Wonton|Martini
+Pollo alle mandorle|Margarita
+Riso cantonese|Sangria
+Anatra laccata|Bellini
+Shawarma|Cuba libre
+Moussaka|Piña colada
+Tzatziki|Caffè corretto
+Souvlaki|Espresso
+Quesadilla|Ginseng
+Enchiladas|Caffè d'orzo
+Fajitas|Tisana
+Chili con carne|Latte di mandorla
+Mac and cheese|Mela cotogna
+Pollo fritto|Clementina
+Nuggets|Bergamotto
+Onion rings|Cedro
+Corn dog|Carambola
+Pretzel|Durian
+Pizzette|Pitaya
+Salatini|Physalis
+Olive|Uvetta
+Capperi|Prugne secche
+Sottaceti|Fico d'India
+Cetriolini|Pesca noce
+Giardiniera|Nespola
+Funghi sott'olio|Sciroppo di menta
+Pomodori secchi|Orzata
+Patata dolce|Torta Margherita
+Topinambur|Crostatina
+Rapa|Granola
+Barbabietola|Cornflakes
+Cavolini di Bruxelles|Pan di Spagna
+Cavolo nero|Savoiardi
+Cime di rapa|Biscotti al burro
+Friarielli|Gelato alla stracciatella
+Cicoria|Zucchero a velo
+Finocchio|Pasta frolla
+Edamame|Pasta sfoglia
+Tofu|Panna montata
+Seitan|Glassa
+Tempeh|Caramello
+Gazpacho|Torta di compleanno
+Zuppa di cipolle|Biscotti della fortuna
+Miso|Pancarré
+Salsa barbecue|Cono gelato
+Wasabi|Pain au chocolat
+Salsa di soia|Fiocchi d'avena
+Tabasco|Latte condensato
+Aceto balsamico|Crema catalana
+Olio d'oliva|Frutta candita
+Strutto|Marron glacé
+Farina|Fish burger
+Lievito|Pizza al taglio
+Semola|Bistecca alla fiorentina
+Pangrattato|Arrosto di maiale
+Couscous|Biscotti allo zenzero
+Curry|Frutta secca
+Dim sum|Pan di zenzero
+Quinoa|Cioccolato bianco
+Omelette|Biscotti Oreo
+Crêpe|Bastoncini di pesce
+Gorgonzola|Gelatina di frutta
+Brie|Gomma da masticare
+Ricotta|Hamburger vegano
+Stracchino|Hot pot
+Riso basmati|Torta al limone
+Riso venere|Biscotti di Natale
+Pasta al forno|Cubetti di ghiaccio
+Pizza bianca|Frutti di bosco
+Pizza capricciosa|Gelato al gusto puffo
+Pizza diavola|Torta salata
+Insalata di riso|Brodo di pollo
+Insalata caprese|Pasta in bianco
+Insalata russa|Pastina in brodo
+Patate al forno|Crema di nocciole
+Tagliata|Biscotti integrali
+Costine|Cioccolatini
+Pollo al curry|Crostata di frutta
+Coniglio alla cacciatora|Gelato al caffè
+Agnello|Torta di carote
+Cinghiale|Mela caramellata
+Trippa|Zucchero di canna
+Lampredotto|Barretta di cereali
+Pizza margherita|Torta paradiso
+Pesto alla genovese|Torta tenerina
+Polenta e funghi|Sorbetto al mango
+Risotto ai funghi|Torta mimosa
+Gnocchi alla sorrentina|Cassatina
+Lasagne alla bolognese|Tartufo al cioccolato
+Pasta al tonno|Torta Pasqualina
+Pane e olio|Krapfen alla crema
+Frittata di maccheroni|Zeppole di San Giuseppe
+Melanzane ripiene|Chiacchiere al miele
+Peperoni ripieni|Bocconotto
+Spigola al forno|Brutti ma buoni
+Pesce al cartoccio|Baci di dama
+Frittura mista|Ricciarelli
+Calamari fritti|Panforte
+Polpo con patate|Mostaccioli
+Insalata di mare|Cartellate
 `},
-ambienti: { nome: "Ambienti", colore: "--t-ambienti", coppie: `
+ambienti: { nome: "Ambienti", colore: "--t-ambienti",
+difficile: `
 Spiaggia|Piscina
 Montagna|Collina
 Deserto|Savana
@@ -205,8 +411,211 @@ Laguna|Stagno
 Duna|Oasi
 Canyon|Valle
 Tundra|Steppa
+Monolocale|Bilocale
+Villa|Villetta a schiera
+Condominio|Palazzina
+Cascina|Agriturismo
+Masseria|Trullo
+Chalet|Bungalow
+Roulotte|Casa mobile
+Bed and breakfast|Pensione
+Motel|Locanda
+Resort|Villaggio turistico
+Sala conferenze|Sala riunioni
+Open space|Coworking
+Call center|Sportello
+Ambulatorio|Studio dentistico
+Sala operatoria|Terapia intensiva
+Reparto maternità|Pediatria
+Asilo nido|Ludoteca
+Ring|Ottagono
+Piscina comunale|Parco acquatico
+Lido|Spiaggia libera
+Pineta|Castagneto
+Risaia|Piantagione
+Alpeggio|Pascolo
+Ruscello|Torrente
+Delta|Estuario
+Golfo|Baia
+Fiordo|Insenatura
+Vetta|Cresta
+Altopiano|Pianura
+Pozzo|Cisterna
+Fogna|Condotto
+Bunker|Rifugio antiaereo
+Cripta|Sotterraneo
+Campanile|Minareto
+Cattedrale|Basilica
+Sinagoga|Moschea
+Convento|Abbazia
+Santuario|Eremo
+Anfiteatro|Teatro greco
+Pinacoteca|Archivio
+Planetario|Museo della scienza
+Concessionaria|Showroom
+Ferramenta|Negozio di fai da te
+Negozio di giocattoli|Cartoleria
+Gioielleria|Orologeria
+Ottico|Sanitaria
+Tintoria|Sartoria
+Barbiere|Studio di tatuaggi
+Enoteca|Birreria
+Trattoria|Osteria
+`,
+facile: `
+Barriera corallina|Lavanderia a gettoni
+Foresta pluviale|Sala da ballo
+Iceberg|Cabina armadio
+Prato fiorito|Sala server
+Campo di girasoli|Sala macchine
+Mangrovie|Biglietteria
+Scogli|Sala d'imbarco
+Sentiero|Dogana
+Radura|Cella frigorifera
+Sorgente|Camerino
+Cratere|Cucina industriale
+Nevaio|Ufficio anagrafe
+Bosco incantato|Deposito degli autobus
+Giardino zen|Sala di controllo
+Labirinto di siepi|Studio notarile
+Castello di sabbia|Agenzia delle entrate
+Faraglioni|Sala da biliardo
+Pista ciclabile|Sala lettura
+Ponte tibetano|Atelier di moda
+Mulino a vento|Studio fotografico
+Frantoio|Scuola di danza
+Distilleria|Autoscuola
+Caseificio|Agenzia di viaggi
+Salumificio|Agenzia immobiliare
+Birrificio|Ufficio di collocamento
+Torrefazione|Fioraio
+Mattatoio|Profumeria
+Acciaieria|Merceria
+Raffineria|Negozio di dischi
+Centrale elettrica|Bottega artigiana
+Centrale nucleare|Negozio di animali
+Parco eolico|Negozio di scarpe
+Cava di marmo|Boutique
+Pozzo petrolifero|Ristorante stellato
+Piattaforma petrolifera|Mensa aziendale
+Porto turistico|Cioccolateria
+Cantiere navale|Creperia
+Hangar|Sushi bar
+Torre di controllo|Wine bar
+Pista di atterraggio|Teatro dei burattini
+Base militare|Cinema all'aperto
+Trincea|Sala karaoke
+Fortezza|Pista di go-kart
+Torre di guardia|Parco avventura
+Mura della città|Fattoria didattica
+Fossato|Piscina per bambini
+Ponte levatoio|Cameretta
+Segrete|Box auto
+Sala del trono|Lavatoio
+Salone delle feste|Terrazza panoramica
+Tomba|Pista da ballo
+Mausoleo|Ufficio stampa
+Arco di trionfo|Sala prove
+Acquedotto|Sala d'armi
+Bagni pubblici|Camera oscura
+Foro romano|Sala yoga
+Saloon|Studio di architettura
+Ranch|Centro benessere
+Miniera d'oro|Biblioteca universitaria
+Villaggio indiano|Sala insegnanti
+Nave pirata|Aula magna
+Isola tropicale|Salotto
+Batiscafo|Mansarda
+Fondale marino|Sottoscala
+Relitto|Cabina telefonica
+Stazione polare|Fermata dell'autobus
+Base lunare|Cassa del supermercato
+Superficie di Marte|Casello autostradale
+Shuttle|Panchina del parco
+Laboratorio segreto|Chiosco
+Covo dei ladri|Bancarella
+Casa infestata|Sala operativa
+Casa sull'albero|Ufficio del preside
+Tepee|Aula di informatica
+Yurta|Piazzola di sosta
+Vagone letto|Cortile della scuola
+Cabina di pilotaggio|Parrocchia
+Ponte di comando|Oratorio
+Stiva|Sacrestia
+Scialuppa|Canonica
+Funicolare|Battistero
+Seggiovia|Cappella
+Skilift|Confessionale
+Ascensore panoramico|Navata
+Sottopassaggio|Torre dell'orologio
+Cavalcavia|Mulino ad acqua
+Rotonda|Sala d'udienza
+Incrocio|Vicolo
+Strada sterrata|Sala parto
+Bosco di bambù|Negozio di elettronica
+Foresta di sequoie|Negozio dell'usato
+Lago ghiacciato|Banco dei pegni
+Sorgente termale|Videoteca
+Palude di mangrovie|Internet point
+Prato all'inglese|Edicola della stazione
+Collina toscana|Sala d'aspetto del medico
+Campo di lavanda|Sala del consiglio
+Uliveto secolare|Ufficio delle poste centrali
+Spiaggia di sassi|Sala da pranzo dell'hotel
+Scogliera bianca|Corridoio dell'ospedale
+Laguna blu|Archivio comunale
+Dolomiti|Sala d'attesa del treno
+Ghiacciaio perenne|Spogliatoio della piscina
+Vulcano attivo|Spogliatoio della palestra
+Isola vulcanica|Camera mortuaria
+Grotta di ghiaccio|Sala macchinette
+Cascata gelata|Ripostiglio delle scope
+Foce del fiume|Cantina dei vini
+Ansa del fiume|Sala da tè inglese
+Riva del lago|Ufficio postale di paese
+Pontile|Studio del commercialista
+Spiaggia tropicale|Sala d'aspetto del dentista
+Collina di vigneti|Bagno dell'autogrill
+Prato alpino|Bagno chimico
+Bosco di querce|Sala del cinema multisala
+Sottobosco|Aula di scienze
+Cima innevata|Palestra della scuola
+Rifugio di caccia|Sala server aziendale
+Malga|Ufficio open space
+Stagno delle rane|Sala da tè giapponese
+Canneto|Sala d'aspetto dell'aeroporto
+Tana del lupo|Negozio di cornici
+Nido d'aquila|Sala d'asta
+Formicaio|Galleria commerciale
+Alveare|Grande magazzino
+Termitaio|Sala slot del casinò
+Barriera di ghiaccio|Sala di lettura della biblioteca
+Penisola artica|Sala da giochi dell'oratorio
+Oasi nel deserto|Ufficio contabilità
+Miraggio|Spaccio aziendale
+Carovana nel deserto|Negozio di souvenir
+Bazar|Pista di pattinaggio sul ghiaccio
+Suk|Stazione sciistica
+Mercato galleggiante|Rifugio di montagna
+Villaggio di pescatori|Villaggio olimpico
+Borgo medievale|Parco tecnologico
+Città fantasma|Stazione di servizio
+Paese di montagna|Porto container
+Città sommersa|Ufficio brevetti
+Atlantide|Sala del tribunale
+Castello delle fiabe|Centro di smistamento
+Casa di marzapane|Centro meteorologico
+Paese dei balocchi|Centro di ricerca
+Polo Sud|Sala da ballo liscio
+Antartide|Pizzeria al taglio
+Siberia|Stabilimento termale
+Sahara|Pista di pattinaggio a rotelle
+Amazzonia|Cineteca
+Vulcano spento|Ufficio oggetti smarriti
+Savana africana|Sala d'aspetto della questura
 `},
-citta: { nome: "Città", colore: "--t-citta", coppie: `
+citta: { nome: "Città", colore: "--t-citta",
+difficile: `
 Roma|Atene
 Milano|Torino
 Napoli|Palermo
@@ -307,8 +716,211 @@ Oxford|Cambridge
 Lussemburgo|Andorra
 Città del Vaticano|San Marino
 Anversa|Bruges
+Amburgo|Brema
+Francoforte|Stoccarda
+Colonia|Düsseldorf
+Bordeaux|Tolosa
+Strasburgo|Basilea
+Berna|Losanna
+Lugano|Locarno
+Innsbruck|Graz
+Bratislava|Lubiana
+Tallinn|Riga
+Vilnius|Danzica
+Glasgow|Belfast
+Birmingham|Leeds
+Brighton|Bristol
+Rotterdam|L'Aia
+Utrecht|Eindhoven
+Gand|Liegi
+Malaga|Marbella
+Palma di Maiorca|Ibiza
+Las Palmas|Santa Cruz de Tenerife
+Coimbra|Braga
+Atlanta|Charlotte
+Denver|Salt Lake City
+Phoenix|Albuquerque
+San Diego|Sacramento
+Austin|San Antonio
+Minneapolis|Milwaukee
+Saint Louis|Kansas City
+Baltimora|Pittsburgh
+Québec|Winnipeg
+Brisbane|Perth
+Auckland|Wellington
+Yokohama|Nagoya
+Busan|Incheon
+Ho Chi Minh|Phnom Penh
+Calcutta|Chennai
+Karachi|Lahore
+Teheran|Baghdad
+Doha|Riad
+Beirut|Damasco
+Tel Aviv|Haifa
+Amman|Petra
+Tangeri|Fez
+Algeri|Orano
+Dakar|Accra
+Kinshasa|Luanda
+Zanzibar|Mombasa
+Caracas|Quito
+Medellín|Cartagena
+Brasilia|Belo Horizonte
+`,
+facile: `
+Agrigento|Anchorage
+Trapani|Kathmandu
+Ragusa|Ulan Bator
+Enna|Lhasa
+Caltanissetta|Timbuctù
+Nuoro|Asunción
+Oristano|La Valletta
+Olbia|Islamabad
+Alghero|Tashkent
+Crotone|Samarcanda
+Catanzaro|Baku
+Vibo Valentia|Tbilisi
+Taranto|Erevan
+Brindisi|Astana
+Foggia|Novosibirsk
+Barletta|Vladivostok
+Andria|Murmansk
+Benevento|Kazan
+Avellino|Odessa
+Caserta|Leopoli
+Salerno|Bergen
+Latina|Göteborg
+Frosinone|Malmö
+Viterbo|Aarhus
+Rieti|Uppsala
+Terni|Rovaniemi
+Arezzo|Nuuk
+Grosseto|Cork
+Prato|Galway
+Pistoia|Cardiff
+Massa|Aberdeen
+Carrara|Inverness
+Imperia|Nantes
+Savona|Rennes
+Alessandria|Lille
+Asti|Digione
+Cuneo|Avignone
+Novara|Montpellier
+Biella|Grenoble
+Varese|Ajaccio
+Lecco|Saint-Tropez
+Sondrio|Biarritz
+Lodi|San Sebastián
+Pavia|Saragozza
+Monza|Toledo
+Rovigo|Salamanca
+Belluno|Cordova
+Pordenone|Alicante
+Gorizia|Santiago di Compostela
+Rovereto|Pamplona
+Merano|Funchal
+Reggio Emilia|Reims
+Forlì|Calais
+Cesena|Agadir
+Pesaro|Essaouira
+Urbino|Luxor
+Macerata|Assuan
+Ascoli Piceno|Sharm el-Sheikh
+Teramo|Hurghada
+Chieti|Djerba
+Isernia|Kampala
+Termoli|Kigali
+Gallipoli|Windhoek
+Otranto|Antananarivo
+Polignano a Mare|Port Louis
+Ostuni|Malé
+Tropea|Colombo
+Cefalù|Goa
+Lampedusa|Jaipur
+Pantelleria|Agra
+Lipari|Varanasi
+Gubbio|Dacca
+Spoleto|Thimphu
+Orvieto|Chiang Mai
+Montepulciano|Phuket
+San Gimignano|Luang Prabang
+Volterra|Siem Reap
+Cortona|Yangon
+Camogli|Macao
+Rapallo|Sapporo
+Alassio|Okinawa
+Bordighera|Fukuoka
+Livigno|Kobe
+Bormio|Shenzhen
+Pievepelago|Canton
+Ortisei|Chengdu
+Bressanone|Xi'an
+Brunico|Harbin
+Vipiteno|Daegu
+Chioggia|Darwin
+Jesolo|Adelaide
+Caorle|Hobart
+Lignano|Cairns
+Grado|Christchurch
+Bibione|Queenstown
+Riva del Garda|Suva
+Sirmione|Papeete
+Desenzano|Nouméa
+Stresa|Fairbanks
+Varenna|Juneau
+Cervinia|Yellowknife
+Sestriere|Whitehorse
+Bardonecchia|Halifax
+Limone sul Garda|Edmonton
+Peschiera del Garda|Saskatoon
+Mondello|Acapulco
+Giardini Naxos|Tijuana
+Maiori|Guadalajara
+Ravello|Monterrey
+Procida|Puebla
+Ischia|Oaxaca
+Capri|Mérida
+Ponza|Tulum
+Ventotene|Playa del Carmen
+Portoferraio|Città del Guatemala
+Porto Cervo|Tegucigalpa
+Stintino|Managua
+Villasimius|San Salvador
+Castelsardo|Kingston
+Bosa|Port-au-Prince
+Iglesias|Nassau
+Carbonia|Bridgetown
+Noto|Paramaribo
+Modica|Georgetown
+Erice|Cayenne
+Scicli|Belém
+Marsala|Manaus
+Mazara del Vallo|Fortaleza
+Sciacca|Porto Alegre
+Gela|Curitiba
+Acireale|Florianópolis
+Milazzo|Natal
+Bagheria|Rosario
+Monreale|Córdoba
+Corleone|Bariloche
+Tivoli|Ushuaia
+Frascati|Punta Arenas
+Anzio|Arequipa
+Gaeta|Trujillo
+Sperlonga|Cali
+Terracina|Barranquilla
+Fiumicino|Maracaibo
+Civitavecchia|Guayaquil
+Ostia|Santa Cruz de la Sierra
+Fano|Sucre
+Senigallia|Cochabamba
+Jesi|Antofagasta
+Fermo|Iquique
+Loreto|Temuco
+Recanati|Concepción
 `},
-automobili: { nome: "Automobili", colore: "--t-auto", coppie: `
+automobili: { nome: "Automobili", colore: "--t-auto",
+difficile: `
 Fiat 500|Mini Cooper
 Fiat Panda|Fiat Uno
 Fiat Punto|Opel Corsa
@@ -409,8 +1021,211 @@ Betoniera|Camion
 Spazzaneve|Spazzatrice
 Fiat 850|Autobianchi A112
 Golf GTI|Clio Williams
+Fiat Bravo|Fiat Stilo
+Fiat Grande Punto|Fiat Punto Evo
+Fiat Freemont|Dodge Journey
+Fiat Sedici|Suzuki SX4
+Fiat Barchetta|Fiat Coupé
+Lancia Lybra|Lancia Dedra
+Lancia Voyager|Chrysler Voyager
+Alfa Romeo 147|Alfa Romeo 156
+Alfa Romeo MiTo|Alfa Romeo Junior
+Alfa Romeo 33|Alfa Romeo 75
+Ferrari F40|Ferrari Enzo
+Ferrari Roma|Ferrari Portofino
+Lamborghini Huracán|Lamborghini Aventador
+Lamborghini Diablo|Lamborghini Murciélago
+Maserati MC20|Maserati Levante
+Porsche Boxster|Porsche Cayman
+Porsche Macan|Porsche Panamera
+Volkswagen Tiguan|Volkswagen Touareg
+Volkswagen T-Roc|Volkswagen T-Cross
+Volkswagen ID.3|Volkswagen ID.4
+Audi A1|Audi A6
+Audi Q3|Audi Q5
+BMW Serie 1|BMW Serie 5
+BMW X1|BMW X3
+Mercedes Classe B|Mercedes Classe E
+Mercedes GLA|Mercedes GLC
+Toyota C-HR|Toyota Yaris Cross
+Toyota GT86|Subaru BRZ
+Toyota Supra|Nissan GT-R
+Nissan Juke|Ford Puma
+Nissan 370Z|Mazda RX-8
+Honda Jazz|Suzuki Ignis
+Honda NSX|Lexus LFA
+Hyundai Kona|Kia Stonic
+Hyundai Ioniq 5|Kia EV6
+Kia Ceed|Hyundai i30
+Kia Rio|Hyundai i20
+Renault Mégane|Renault Scénic
+Renault Twingo|Peugeot 108
+Peugeot 2008|Citroën C3 Aircross
+Peugeot 308|Citroën C4
+Citroën C1|Peugeot 107
+Opel Zafira|Opel Meriva
+Opel Insignia|Ford Mondeo
+Ford Kuga|Ford EcoSport
+Ford Focus RS|Volkswagen Golf R
+Skoda Fabia|Skoda Kamiq
+Skoda Superb|Skoda Kodiaq
+Seat Arona|Seat Ateca
+Tesla Model X|Tesla Model Y
+`,
+facile: `
+Bugatti Chiron|Fiat Duna
+Pagani Zonda|Fiat Regata
+Ferrari LaFerrari|Fiat 126
+Lamborghini Miura|Renault Kangoo
+Ferrari Dino|Fiat Qubo
+Ferrari 458|Dacia Logan
+Ferrari 812|Citroën Méhari
+Aston Martin DB5|Fiat Strada
+McLaren F1|Nissan Navara
+Porsche 959|Mitsubishi L200
+Bentley Continental|Suzuki Vitara
+Rolls-Royce Phantom|Daihatsu Terios
+Maybach|Fiat Ulysse
+Cadillac Escalade|Piaggio Porter
+Lincoln Continental|Ligier
+Chevrolet Bel Air|Aixam
+Ford Model T|Tesla Roadster
+Ford GT40|Renault Trafic
+Shelby GT500|Fiat Talento
+Plymouth Fury|Toyota Hilux
+Pontiac Trans Am|Isuzu D-Max
+Oldsmobile|Smart Forfour
+Volkswagen Karmann Ghia|Volvo 240
+Citroën CX|Nissan Patrol
+Lancia Aurelia|Subaru Forester
+Lancia Flaminia|Subaru Outback
+Alfa Romeo Montreal|Honda HR-V
+Alfa Romeo Duetto|Kia Soul
+Alfa Romeo 8C|SsangYong Tivoli
+Fiat Dino|Mahindra
+Innocenti Mini|Mercedes Classe V
+Autobianchi Bianchina|BMW X7
+Isetta|Audi Q8
+Messerschmitt KR200|Volkswagen Touran
+Fiat Campagnola|Peugeot RCZ
+Willys Jeep|Audi A5
+Lamborghini LM002|Toyota iQ
+Ferrari F50|Renault Modus
+Mercedes SLS|Opel Agila
+Mercedes 190|Lamborghini Gallardo
+BMW M3|Citroën Xsara Picasso
+BMW M5|Fiat Marea
+Audi Quattro|Fiat Palio
+Audi RS6|Lancia Phedra
+Porsche 356|Peugeot 806
+Porsche Carrera GT|Ford Galaxy
+Lotus Esprit|Volkswagen Sharan
+Alpine A310|Seat Alhambra
+Jaguar XK|Chrysler PT Cruiser
+Jaguar E-Type|Fiat Scudo
+Aston Martin Vantage|Opel Vivaro
+Aston Martin Valkyrie|Volkswagen Caddy
+Bugatti Type 35|Dacia Lodgy
+Rimac Nevera|Fiat Panda Cross
+Lucid Air|Lada Samara
+Polestar 2|Fiat Tempra
+BYD Seal|Lancia Prisma
+MG ZS|Ferrari 308
+Tata Nano|Ferrari 599
+Mazda CX-5|Ferrari California
+Mazda 3|Lamborghini Jalpa
+Mitsubishi Space Star|Maserati Biturbo
+Mitsubishi Outlander|Maserati GranTurismo
+Mitsubishi Colt|Bentley Bentayga
+Nissan Terrano|Rolls-Royce Cullinan
+Nissan Note|Lamborghini Revuelto
+Honda Accord|Ferrari Mondial
+Honda e|Hummer EV
+Suzuki Samurai|Lexus RX
+Suzuki Celerio|Mercedes CLS
+Daihatsu Cuore|Audi e-tron
+Hyundai Atos|BMW i8
+Hyundai Santa Fe|Fiat 500e
+Kia Niro|Ferrari 250 GTO
+Kia Stinger|Citroën Saxo
+Seat Marbella|Lamborghini Espada
+Skoda Felicia|Aston Martin DB11
+Skoda Yeti|Ferrari 488
+Volvo 850|Ferrari F8
+Saab 9-3|Ferrari 296
+Lancia Beta|Bugatti Bolide
+Fiat X1/9|Toyota Previa
+Fiat 131|Kia Carnival
+Fiat 128|Toyota Hiace
+Fiat 1100|Ford Ranger
+Rolls-Royce Ghost|Fiat Panda 4x4
+Bentley Mulsanne|Suzuki Alto
+Maserati Bora|Renault Express
+Ferrari 348|Citroën Jumpy
+Lamborghini Urraco|Peugeot Partner
+McLaren 720S|Dacia Dokker
+McLaren P1|Opel Combo
+Porsche 918|Fiat Fullback
+Koenigsegg Jesko|Lada Vesta
+Aston Martin DBS|Toyota Proace
+Mercedes SL|Nissan Pixo
+BMW Z8|Suzuki Splash
+Jaguar F-Pace|Fiat 500L
+Maserati Grecale|Citroën C5 Aircross
+Alfa Romeo 4C|Volkswagen Fox
+Alfa Romeo Brera|Fiat Croma Station Wagon
+Alfa Romeo GT|Renault Laguna
+Alfa Romeo 166|Citroën C-Zero
+Lancia Stratos Zero|Opel Frontera
+Ferrari 365 GTB/4 Daytona|Kia Venga
+Ford Thunderbird|Fiat Panda Hybrid
+Chevrolet Suburban|Mini Moke
+Chevrolet Silverado|Smart Roadster
+GMC Hummer|Fiat 500 Topolino
+Ram 1500|Microlino
+Dodge Charger|Renault Avantime
+Dodge Ram|Peugeot iOn
+Chrysler 300C|Citroën C4 Cactus
+Jeep Gladiator|Nissan Cube
+Ford Bronco|Toyota Mirai
+Lexus LX|Fiat Uno Turbo
+Infiniti QX80|Peugeot 205 Cabrio
+Land Rover Range Rover Velar|Renault 21
+Volvo XC70|Lancia Y10
+Volvo P1800|Ford Transit Connect
+Saab 9-5|Ferrari SF90
+Opel GT|Mercedes Vito
+Opel Manta|Fiat Ducato
+Opel Kadett|Renault Master
+Ford Escort|Ferrari 12Cilindri
+Ford Capri|Iveco Massif
+Ford Sierra|Ferrari Monza
+Ford Granada|Lamborghini Temerario
+Citroën 2CV Charleston|Bugatti Tourbillon
+Citroën SM|Fiat Panda 30
+Peugeot 404|Mercedes Classe X
+Peugeot 504|Toyota Tundra
+Renault Alpine A110|Ford Explorer
+Renault Clio V6|Chevrolet Tahoe
+Renault Espace F1|Daewoo Lanos
+Volkswagen Corrado|Ford Expedition
+Volkswagen Phaeton|Mitsubishi Pajero Pinin
+Volkswagen New Beetle|Ferrari Testarossa Spider
+Ferrari 275|Renault Kadjar
+Lamborghini Islero|Opel Crossland
+Maserati Khamsin|Dacia Jogger
+Bugatti EB110|Toyota Corolla Cross
+Porsche 928|Kia Picanto
+De Tomaso Pantera|Hyundai Bayon
+Iso Rivolta|Nissan Almera
+Cizeta V16T|Ford B-Max
+Vector W8|Suzuki Wagon R
+Hennessey Venom|Daihatsu Sirion
+SSC Tuatara|Chevrolet Matiz
+Zenvo ST1|Fiat Punto Cabrio
 `},
-sport: { nome: "Sport", colore: "--t-sport", coppie: `
+sport: { nome: "Sport", colore: "--t-sport",
+difficile: `
 Calcio|Calcio a 5
 Basket|Pallamano
 Pallavolo|Beach volley
@@ -511,8 +1326,211 @@ Freestyle motocross|Enduro
 Pattinaggio di velocità|Short track
 Tamburello|Pallapugno
 Sitting volley|Basket in carrozzina
+Calcio a 7|Calcio a 8
+Basket 3x3|Streetball
+Pickleball|Beach tennis
+Footgolf|Disc golf
+Rugby a 7|Rugby a 13
+Sci d'erba|Sci indoor
+Freeride|Freestyle
+Slalom speciale|Discesa libera
+Super G|Combinata alpina
+Snowboard cross|Ski cross
+Halfpipe|Big air
+Hockey su pista|Ringette
+Combinata nordica|Skiroll
+Corsa su strada|Corsa su pista
+800 metri|1500 metri
+110 ostacoli|400 ostacoli
+5000 metri|10000 metri
+Sciabola|Fioretto
+Spada|Scherma storica
+Grappling|Lotta libera
+Brazilian jiu-jitsu|Sambo
+Krav maga|Difesa personale
+Savate|Full contact
+Ginnastica acrobatica|Ginnastica aerobica
+Parallele|Sbarra
+Anelli|Cavallo con maniglie
+Trave|Corpo libero
+Volteggio|Tumbling
+Tuffi dalla piattaforma|Tuffi dal trampolino
+Cliff diving|High diving
+Stile libero|Dorso
+Rana|Delfino
+Canoa slalom|Discesa fluviale
+Dragon boat|Canottaggio costiero
+Optimist|Laser
+America's Cup|Vendée Globe
+Bodyboard|Skimboard
+Wakesurf|Wing foil
+Supermotard|Speedway
+Superbike|Supersport
+Formula E|Formula 2
+24 Ore di Le Mans|Rally Dakar
+Drifting|Drag racing
+Gran fondo|Ciclismo su strada
+Prova a cronometro|Cronoscalata
+Keirin|Omnium
+Dirt jump|Pump track
+Downhill|Cross country
+Endurance equestre|Concorso completo
+Galoppo|Steeplechase
+`,
+facile: `
+Kayak|Karting
+Croquet|Pilates
+Corsa dei cavalli|Kitesurf
+Pattinaggio di velocità|Bungee jumping
+Orienteering|Breakdance
+Ultramaratona|Powerlifting
+Danza classica|Tiro con l'arco
+Paracadutismo|Biliardo
+Karate|Calcio
+Trekking|Nuoto
+Canoa|Lotta greco-romana
+Vela|Bocce
+Pallavolo|Tiro con l'arco
+NASCAR|Skeleton
+Decathlon|Taekwondo
+Freestyle motocross|Salto in alto
+Salto triplo|Pilates
+Rodeo|Calcio a 5
+24 Ore di Le Mans|Tuffi
+Bridge|Moto d'acqua
+Corsa dei cavalli|Trampolino elastico
+Motocross|Rugby
+Burraco|Skyrunning
+Surf|Corsa campestre
+Alpinismo|Danza moderna
+Tiro al piattello|Rafting
+Skyrunning|Petanque
+Decathlon|Bodybuilding
+MMA|Ultramaratona
+Calisthenics|Snooker
+Rugby|Trampolino elastico
+Pattinaggio di velocità|Sci nautico
+Badminton|Sollevamento pesi
+Parkour|Kitesurf
+Orienteering|Mezza maratona
+Air hockey|Moto d'acqua
+Minigolf|Boxe
+Immersione|Nordic walking
+Ginnastica ritmica|Taekwondo
+Cheerleading|Corsa campestre
+Parkour|Rally
+Sci alpinismo|Krav maga
+Capoeira|Pallavolo
+Pallamano|SUP
+Bridge|Sollevamento pesi
+Sci alpinismo|MMA
+Yoga|Tiro al piattello
+Dama|Breakdance
+BMX|Pallamano
+Sambo|Karting
+Snooker|Hockey su prato
+Dressage|Capoeira
+Windsurf|Salto con gli sci
+400 metri|Pedalò
+Bocce|Tennis
+Surf|Calcio
+Ginnastica ritmica|Pallanuoto
+Canyoning|Ciaspolate
+Sumo|Kayak
+Escursionismo|Football americano
+Salto in alto|Bodyboard
+Basket|NASCAR
+Paracadutismo|Sci nautico
+Bungee jumping|Petanque
+Sambo|Pallanuoto
+Sci|Wakeboard
+Marcia|SUP
+Salto triplo|Tennis
+Canottaggio|Marcia
+Esports|Formula E
+Formula E|Immersione
+Powerlifting|Escursionismo
+Pattinaggio artistico|Bodyboard
+Short track|Dama
+Kickboxing|Pallapugno
+Biathlon|Minigolf
+Slalom gigante|Crossfit
+Nuoto sincronizzato|Sci di fondo
+BMX|Slittino
+Corsa a ostacoli|Nuoto
+Lancio del disco|Rally
+Slittino|Rally Dakar
+Curling|Wrestling
+Corsa a ostacoli|Lotta greco-romana
+Calcio balilla|Hockey su ghiaccio
+Bodybuilding|Jujitsu
+Windsurf|Discesa libera
+Kickboxing|Basket
+Sci|Maratona
+Aerobica|Slalom gigante
+Fitness|Discesa libera
+Fitness|Krav maga
+Canottaggio|Softball
+Kung fu|Hockey su prato
+Ping pong|Motocross
+Poker|Speleologia
+Trekking|Beach volley
+Deltaplano|Burraco
+Salto in lungo|Croquet
+Alpinismo|Ping pong
+Ginnastica artistica|24 Ore di Le Mans
+Ciaspolate|Cheerleading
+Lacrosse|Canoa
+Beach volley|Apnea
+Ciclismo|MotoGP
+Arrampicata|Apnea
+Ginnastica artistica|Baseball
+Kung fu|Pedalò
+Padel|Jujitsu
+Tuffi|Hockey su ghiaccio
+Nordic walking|Scherma
+Air hockey|Lacrosse
+Danza sul ghiaccio|Yoga
+Esports|Arrampicata
+Rodeo|Curling
+Wrestling|Nuoto sincronizzato
+Vela|Padel
+Enduro|Danza classica
+Cricket|Parapendio
+Biathlon|Pesca sportiva
+Aerobica|Pattinaggio artistico
+Crossfit|Baseball
+Tamburello|Lancio del giavellotto
+Superbike|Mountain bike
+Tiro a segno|Trail running
+Danza sul ghiaccio|Freestyle motocross
+Parapendio|Lancio del giavellotto
+Sprint 100 metri|Motonautica
+Drifting|Softball
+Squash|400 metri
+Spinning|Formula 1
+Motonautica|Salto con l'asta
+Bob|Calcio a 5
+Karate|Skeleton
+Dressage|Staffetta
+Short track|Polo
+Aikido|Maratona
+Tamburello|Base jumping
+Calcio balilla|Scherma
+Snowboard|Zumba
+Rafting|Freccette
+Tiro a segno|Squash
+Judo|Snowboard
+MotoGP|Deltaplano
+Canyoning|Zumba
+Pallapugno|Lancio del disco
+Bowling|Formula 1
+Rally Dakar|Equitazione
+Judo|Superbike
+Danza moderna|Golf
 `},
-attori: { nome: "Attori", colore: "--t-attori", coppie: `
+attori: { nome: "Attori", colore: "--t-attori",
+difficile: `
 Roberto Benigni|Massimo Troisi
 Totò|Peppino De Filippo
 Alberto Sordi|Nino Manfredi
@@ -613,8 +1631,211 @@ Steven Seagal|Dolph Lundgren
 Helen Mirren|Judi Dench
 Tilda Swinton|Maggie Smith
 Edoardo Leo|Marco Giallini
+Ugo Tognazzi|Gian Maria Volonté
+Massimo Ranieri|Gigi Proietti
+Valerio Mastandrea|Claudio Santamaria
+Alessandro Borghi|Luca Marinelli
+Jasmine Trinca|Micaela Ramazzotti
+Matilda De Angelis|Benedetta Porcaroli
+Vittoria Puccini|Miriam Leone
+Ambra Angiolini|Cristiana Capotondi
+Neri Marcorè|Rocco Papaleo
+Fabrizio Bentivoglio|Sergio Castellitto
+Giuseppe Battiston|Valerio Aprea
+Lillo e Greg|Il Terzo Segreto di Satira
+Frank Matano|Maccio Capatonda
+Massimo Ghini|Gianmarco Tognazzi
+Ricky Memphis|Francesco Pannofino
+Laura Morante|Valeria Bruni Tedeschi
+Stefania Sandrelli|Laura Antonelli
+Nanni Moretti|Silvio Muccino
+Gabriel Garko|Can Yaman
+Alessio Boni|Beppe Fiorello
+Lino Guanciale|Alessandro Preziosi
+Luca Zingaretti|Giorgio Tirabassi
+Andrew Garfield|Tobey Maguire
+Mark Ruffalo|Edward Norton
+Chris Pine|Zac Efron
+Channing Tatum|Bradley Cooper
+Jake Gyllenhaal|Joseph Gordon-Levitt
+Paul Rudd|Jason Bateman
+Idris Elba|Jamie Foxx
+Michael B. Jordan|John Boyega
+Viola Davis|Octavia Spencer
+Halle Berry|Lupita Nyong'o
+Jessica Chastain|Amy Adams
+Rachel McAdams|Rachel Weisz
+Reese Witherspoon|Kate Hudson
+Drew Barrymore|Meg Ryan
+Demi Moore|Sharon Stone
+Michelle Pfeiffer|Kim Basinger
+Jodie Foster|Holly Hunter
+Diane Keaton|Goldie Hawn
+Sigourney Weaver|Jamie Lee Curtis
+Dustin Hoffman|Gene Hackman
+Gary Oldman|Ralph Fiennes
+Ian McKellen|Patrick Stewart
+Paul Newman|Robert Redford
+Gregory Peck|James Stewart
+Gene Kelly|Fred Astaire
+Sophie Marceau|Juliette Binoche
+Marion Cotillard|Léa Seydoux
+Mads Mikkelsen|Christoph Waltz
+`,
+facile: `
+Shirley Temple|Danny Trejo
+Macaulay Culkin|Betty White
+John Belushi|Jessica Lange
+Dan Aykroyd|Kim Novak
+Bill Murray|Jane Fonda
+Steve Martin|Faye Dunaway
+Eddie Redmayne|Whoopi Goldberg
+Hugh Laurie|Lucy Liu
+Simon Pegg|Michelle Yeoh
+Nick Frost|Gong Li
+Sacha Baron Cohen|Ingrid Bergman
+Tom Selleck|Bette Davis
+David Hasselhoff|Greta Garbo
+Pamela Anderson|Peter Sellers
+Jennifer Lopez|Christopher Walken
+Lady Gaga|Boris Karloff
+Cher|Tim Roth
+Madonna|Harvey Keitel
+Kristen Wiig|Stellan Skarsgård
+Melissa McCarthy|Willem Dafoe
+Tina Fey|Ed Harris
+Amy Poehler|Tommy Lee Jones
+Sarah Jessica Parker|Danny Glover
+Kim Cattrall|Ving Rhames
+Lisa Kudrow|Forest Whitaker
+Matthew Perry|Frances McDormand
+Matt LeBlanc|Olivia Colman
+David Schwimmer|Saoirse Ronan
+Jim Parsons|Jessica Tandy
+Bryan Cranston|Natalie Wood
+Aaron Paul|Vivien Leigh
+Kit Harington|Eva Mendes
+Emilia Clarke|Woody Allen
+Peter Dinklage|Elle Fanning
+Sophie Turner|Billy Crystal
+Maisie Williams|Mickey Rourke
+Finn Wolfhard|Raquel Welch
+Winona Ryder|Kurt Russell
+David Harbour|Brigitte Bardot
+Jenna Ortega|Burt Reynolds
+Sydney Sweeney|Charles Bronson
+Austin Butler|Doris Day
+Barry Keoghan|Rita Hayworth
+Paul Mescal|Ava Gardner
+Jacob Elordi|Lauren Bacall
+Dev Patel|Catherine Deneuve
+Rami Malek|Liv Tyler
+Ana de Armas|Ben Kingsley
+Eva Green|Anthony Quinn
+Sandra Oh|Kirk Douglas
+Awkwafina|Michael Douglas
+Mila Kunis|Bob Hoskins
+Ashton Kutcher|Judy Garland
+Gwyneth Paltrow|Ron Perlman
+Ben Affleck|Liza Minnelli
+Casey Affleck|Julie Andrews
+Jennifer Garner|Vincent Price
+Hilary Swank|Rutger Hauer
+Kirsten Dunst|Max von Sydow
+Amanda Seyfried|Benicio del Toro
+Lily Collins|Ewan McGregor
+Lily James|Jeff Bridges
+Jeff Goldblum|Selena Gomez
+Sam Neill|Hailee Steinfeld
+Laura Dern|Jet Li
+Chow Yun-fat|Kate Beckinsale
+Tony Leung|Milla Jovovich
+Ken Watanabe|Jessica Biel
+Hiroyuki Sanada|Carey Mulligan
+Toshiro Mifune|Kristen Bell
+Alain Delon|Mindy Kaling
+Jean-Paul Belmondo|Elliot Page
+Louis de Funès|Jennifer Connelly
+Lando Buzzanca|Pilar Fogliati
+Enrico Montesano|Greta Scarano
+Jerry Calà|Valentina Lodovini
+Vittorio De Sica|Serena Rossi
+Franco Franchi|Ilenia Pastorelli
+Ciccio Ingrassia|Anna Foglietta
+Walter Chiari|Kasia Smutniak
+Raimondo Vianello|Paola Minaccioni
+Sandra Mondaini|Marco D'Amore
+Monica Guerritore|Salvatore Esposito
+Isabella Rossellini|Francesco Montanari
+Mariangela Melato|Edoardo Pesce
+Giulietta Masina|Pietro Castellitto
+Virna Lisi|Nicolas Maupas
+Silvana Mangano|Giuseppe Maggio
+Lea Massari|Ludovico Tersigni
+Valeria Marini|Luigi Lo Cascio
+Anna Valle|Fabrizio Gifuni
+Cesare Bocci|Martina Stella
+Gabriella Pession|Remo Girone
+Vanessa Incontrada|Giorgio Faletti
+Giorgio Pasotti|Luisa Ranieri
+Elena Sofia Ricci|Alessandro Haber
+Carolina Crescentini|Ninetto Davoli
+Claudia Gerini|Leo Gullotta
+Valentina Cervi|Carlo Buccirosso
+Barbara Bouchet|Biagio Izzo
+Edwige Fenech|Peppe Barra
+Gloria Guida|Nino D'Angelo
+Margaret Qualley|Telly Savalas
+Emma Roberts|Yul Brynner
+Chloë Grace Moretz|Peter Falk
+Dakota Johnson|Spencer Tracy
+Dakota Fanning|Orson Welles
+Elizabeth Olsen|Gene Wilder
+Brie Larson|Mel Brooks
+Hilary Duff|Walter Matthau
+Eva Longoria|Jack Lemmon
+Teri Hatcher|Sidney Poitier
+Felicity Huffman|Errol Flynn
+Kerry Washington|Burt Lancaster
+Mariska Hargitay|Tony Curtis
+Jennifer Coolidge|Mark Hamill
+Jane Lynch|Carrie Fisher
+Alyson Hannigan|Ernest Borgnine
+Sarah Michelle Gellar|Lon Chaney
+Neve Campbell|Clark Gable
+Courtney Love|Henry Fonda
+Kate Bosworth|Peter O'Toole
+Mira Sorvino|Omar Sharif
+Rosamund Pike|Martin Sheen
+Gemma Arterton|Charlie Sheen
+Kristin Scott Thomas|Emilio Estevez
+Sienna Miller|Rob Lowe
+Jessica Alba|Patrick Dempsey
+Jennifer Hudson|Michael Keaton
+Diane Kruger|Val Kilmer
+Hugh Jackman|Shirley MacLaine
+Jamie Dornan|Angela Lansbury
+Dylan O'Brien|Bette Midler
+Shia LaBeouf|Barbra Streisand
+Josh Hutcherson|Debbie Reynolds
+Liam Hemsworth|Joan Crawford
+Taron Egerton|Lana Turner
+Richard Madden|Jean Harlow
+Ezra Miller|Mae West
+Miles Teller|Lillian Gish
+Nicholas Hoult|Olivia de Havilland
+Jonah Hill|Ginger Rogers
+Josh Brolin|Jessica Walter
+Jodie Comer|Ruth Gordon
+Ruth Wilson|Lee Van Cleef
+Emma Corrin|Eli Wallach
+Phoebe Waller-Bridge|Klaus Kinski
+Gillian Anderson|Bela Lugosi
+David Duchovny|Kathy Bates
+Tim Robbins|Dolly Parton
 `},
-oggetti: { nome: "Oggetti", colore: "--t-oggetti", coppie: `
+oggetti: { nome: "Oggetti", colore: "--t-oggetti",
+difficile: `
 Ombrello|Impermeabile
 Forbici|Taglierino
 Martello|Tenaglia
@@ -715,8 +1936,211 @@ Bilancia|Metro a nastro
 Pila|Caricabatterie
 Mouse|Tastiera
 Puzzle|Cubo di Rubik
+Tazzina|Mug
+Caraffa|Brocca
+Vaso|Anfora
+Cornice|Quadro
+Gruccia|Appendiabiti
+Armadio|Cassettiera
+Comodino|Mensola
+Scaffale|Vetrinetta
+Letto a castello|Divano letto
+Culla|Lettino
+Amaca|Sdraio
+Ombrellone|Gazebo
+Barbecue|Griglia
+Tostapane|Bistecchiera
+Bollitore|Macchinetta del caffè
+Spremiagrumi|Centrifuga
+Robot da cucina|Impastatrice
+Friggitrice|Friggitrice ad aria
+Pentola a pressione|Casseruola
+Wok|Tegame
+Teglia|Pirofila
+Schiumarola|Pinza da cucina
+Frusta|Cucchiaio di legno
+Apriscatole|Spremiaglio
+Bilancia da cucina|Misurino
+Timer da cucina|Clessidra
+Portachiavi|Moschettone
+Borsa|Marsupio
+Trolley|Borsone
+Ventiquattrore|Cartella
+Stilografica|Biro
+Evidenziatore|Correttore
+Puntina|Chiodo
+Vite|Bullone
+Trapano|Avvitatore
+Sega|Seghetto
+Pinza|Tronchese
+Livella|Filo a piombo
+Pennello|Rullo
+Spugna|Strofinaccio
+Paletta|Spazzolone
+Cestino|Bidone della spazzatura
+Sacchetto|Shopper
+Orologio da polso|Cronometro
+Occhiali da sole|Maschera da sci
+Ventaglio|Ventilatore portatile
+E-reader|Lettore MP3
+Radio|Giradischi
+Cassa bluetooth|Stereo
+Microfono|Megafono
+`,
+facile: `
+Ferro di cavallo|Chiavetta USB
+Bacchetta magica|Cassetta degli attrezzi
+Boomerang|Cerotto
+Peluche|Estintore
+Trottola|Stetoscopio
+Yo-yo|Motosega
+Palloncino|Piccone
+Aquilone|Siringa
+Biglie|Tosaerba
+Costruzioni|Saldatore
+Dado|Tubo da giardino
+Carte da gioco|Semaforo
+Scacchiera|Pinne
+Domino|Sedia a rotelle
+Tombola|Casco
+Salvadanaio|Remo
+Cassaforte|Coriandoli
+Campanello|Ancora
+Citofono|Parrucca
+Serratura|Salvagente
+Maniglia|Corona
+Paravento|Boccaglio
+Carrozzina|Scettro
+Passeggino|Armatura
+Ciuccio|Idrante
+Biberon|Zappa
+Bavaglino|Walkie-talkie
+Pannolino|Sciabola giocattolo
+Seggiolone|Fax
+Sacco a pelo|Metronomo
+Torcia frontale|Carillon
+Mappa|Gong
+Cannocchiale|Cuccia
+Zattera|Fischietto
+Maschera subacquea|Calendario
+Muta da sub|Lampada a lava
+Tavola da surf|Stampella
+Racchetta|Cartolina
+Mazza da baseball|Fiocco
+Guantone|Leggio
+Ginocchiere|Antenna
+Pattini|Mascherina
+Pallina da tennis|Falce
+Birillo|Webcam
+Freccia|Biglietto d'auguri
+Scudo|Lettiera
+Elmo|Carta da regalo
+Trono|Xilofono
+Mantello|Router
+Bastone|Diario
+Lente d'ingrandimento|Forcone
+Monocolo|Guinzaglio
+Naso rosso|Flessibile
+Maschera di carnevale|Prolunga
+Stelle filanti|Scalpello
+Candelina|Gabbia
+Album fotografico|Tiragraffi
+Palla di neve|Telefono fisso
+Orologio a cucù|Pillola
+Plettro|Cassetta della posta
+Arpa|Rilevatore di fumo
+Triangolo|Decespugliatore
+Campana|Raspa
+Trombetta|Ciotola
+Parabola|Benda
+Telecamera|Arco
+Interruttore|Slitta
+Fusibile|Sella
+Lampione|Nano da giardino
+Cartello stradale|Pendolo
+Panchina|Collare
+Allarme|Vanga
+Banco da lavoro|Casetta per uccelli
+Morsa|Fioriera
+Carta vetrata|Osso di gomma
+Irrigatore|Briglie
+Rubinetto|Narghilè
+Scolapiatti|Smartwatch
+Detersivo|Volante
+Ammorbidente|Accetta
+Candeggina|Papillon
+Guanti di gomma|Autoradio
+Portaombrelli|Mascara
+Portacenere|Pompa per bici
+Sottobicchiere|Cric
+Centrotavola|Tergicristallo
+Candeliere|Powerbank
+Abat-jour|Catene da neve
+Comò|Fornelletto da campeggio
+Specchiera|Coltellino svizzero
+Pouf|Pipa
+Panca|Navigatore
+Sedia a dondolo|Seggiolino auto
+Chaise longue|Gavetta
+Futon|Ruota di scorta
+Zanzariera|Sigaro
+Plaid|Specchietto retrovisore
+Trapunta|Tagliaunghie
+Piumone|Schiuma da barba
+Federa|Dopobarba
+Materassino|Cotton fioc
+Borsa dell'acqua calda|Portapacchi
+Attizzatoio|Fondotinta
+Deumidificatore|Forcina
+Termostato|Cerchietto
+Caldaia|Bandana
+Lavello|Passamontagna
+Macchina da cucire|Crema solare
+Ditale|Paraorecchie
+Metro da sarto|Lima per unghie
+Manichino|Piegaciglia
+Rocchetto|Elastico per capelli
+Spilli|Grembiule
+Velcro|Vestaglia
+Fazzoletto|Contatore
+Pochette|Boiler
+Calzamaglia|Purificatore d'aria
+Collant|Umidificatore
+Cuffia|Legna
+Fascia per capelli|Tritarifiuti
+Dischetti di cotone|Pattumiera
+Accendigas|Bandiera
+Flauto|Lavastoviglie portatile
+Clarinetto|Piastrella
+Tromba|Mattone
+Sassofono|Tegola
+Armonica|Cemento
+Ocarina|Secchiello
+Tamburo|Termometro da forno
+Bongo|Rasoio elettrico
+Drone|Cavatappi elettrico
+Aeroplanino telecomandato|Spazzola per capelli
+Console|Cucitrice
+Lettore DVD|Mollette per capelli
+Fotocamera istantanea|Tappetino del mouse
+Rullino|Attaccapanni da parete
+Giradischi portatile|Pentolino
+Penna USB|Portafoto
+Mappamondo luminoso|Portagioie
+Scatola di fiammiferi|Portapane
+Tappo di sughero|Portatovaglioli
+Barattolo di vetro|Portaspezie
+Bottiglia di vetro|Portasapone
+Lattina di bibita|Porta CD
+Cassetta di frutta|Porta bici
+Pallet|Porta riviste
+Scatolone|Portamonete
+Nastro isolante|Porta passaporto
+Fascetta|Porta badge
+Gancio|Porta occhiali
 `},
-corpo: { nome: "Parti del corpo", colore: "--t-corpo", coppie: `
+corpo: { nome: "Parti del corpo", colore: "--t-corpo",
+difficile: `
 Testa|Cranio
 Capelli|Barba
 Fronte|Tempia
@@ -811,17 +2235,220 @@ Ventricolo|Atrio
 Bronchi|Alveoli
 Mandibola|Fontanella
 Impronta digitale|Linee della mano
-Doppio mento|Pancetta
+Doppio mento|Maniglie dell'amore
 Girovita|Circonferenza cranica
 Papille gustative|Mucosa
 Orecchie a sventola|Naso aquilino
 Cromosoma|Gene
 Orecchio interno|Staffa
+Glottide|Epiglottide
+Intestino tenue|Intestino crasso
+Uretra|Uretere
+Surreni|Timo
+Linfonodi|Adenoidi
+Meningi|Ipotalamo
+Talamo|Ippocampo
+Lobo frontale|Lobo temporale
+Emisfero destro|Emisfero sinistro
+Sinapsi|Assone
+Dendriti|Mielina
+Cristallino|Sclera
+Congiuntiva|Dotto lacrimale
+Nervo ottico|Nervo sciatico
+Incudine|Coclea
+Tromba di Eustachio|Vestibolo
+Turbinati|Seni frontali
+Frenulo|Palato molle
+Smalto dei denti|Dentina
+Polpa dentale|Radice del dente
+Premolari|Denti da latte
+Arcata sopraccigliare|Orbita
+Occipite|Parietale
+Osso temporale|Osso frontale
+Atlante|Epistrofeo
+Vertebre cervicali|Vertebre lombari
+Ischio|Pube
+Acetabolo|Collo del femore
+Trocantere|Astragalo
+Metacarpo|Scafoide
+Osso radio|Olecrano
+Acromion|Cuffia dei rotatori
+Trapezio|Gran dorsale
+Romboidi|Dentato
+Psoas|Sartorio
+Gemelli|Soleo
+Femorali|Adduttori
+Intercostali|Obliqui
+Pleura|Peritoneo
+Pericardio|Valvola mitrale
+Vena cava|Giugulare
+Carotide|Arteria femorale
+Safena|Coronarie
+Linfa|Bile
+Insulina|Adrenalina
+Emoglobina|Melanina
+Collagene|Cheratina
+Sebo|Pori
+Follicolo|Bulbo pilifero
+Epidermide|Derma
+`,
+facile: `
+Quadricipiti|Medio
+Arco plantare|Sterno
+Pollice|Saliva
+Nervo|Palato
+Vena|Braccio
+Palpebra|Saliva
+Neurone|Baffi
+Cuore|Palato
+Sopracciglio|Colon
+Medio|Arteria
+Gengiva|Collo
+Colonna vertebrale|Vena
+Nuca|Cuore
+Indice|Fronte
+Mano|Pianta del piede
+Torace|Lacrime
+Ugola|Schiena
+Cervello|Tempia
+Pelle|Lobo
+Girovita|Femore
+Arteria|Glutei
+Costola|Medio
+Scheletro|Bacino
+Lingua|Bacino
+Brufolo|Caviglia
+Pelle|Torace
+Impronta digitale|Saliva
+Nocche|Stomaco
+Glutei|Girovita
+Glutei|Lentiggini
+Colonna vertebrale|Testa
+Ascella|Calcagno
+Femore|Tonsille
+Calcagno|Tiroide
+Vescica|Nuca
+Intestino|Sangue
+Rughe|Rotula
+Occhio|Stomaco
+Bacino|Globuli rossi
+Fronte|Fegato
+Tallone|Ciglia
+Occhiaie|Tendine d'Achille
+Sangue|Torace
+Pancreas|Piede
+Collo|Testa
+Tricipite|Pancia
+Fianco|Anulare
+Sopracciglio|Cervello
+Cicatrice|Ugola
+Ciglia|Caviglia
+Spalla|Nuca
+Scheletro|Fianco
+Appendice|Dente
+Polso|Sudore
+Bocca|Polpaccio
+Sudore|Bicipite
+Ciglia|Muscolo
+Diaframma|Polpastrello
+Esofago|Sopracciglio
+Gengiva|Cicatrice
+Sudore|Dito
+Testa|Polpaccio
+Pupilla|Spalla
+Sangue|Clavicola
+Sedere|Peli
+Tibia|Palmo
+Tallone|Labbra
+Ugola|Clavicola
+Nervo|Pancreas
+Tempia|Fegato
+Trachea|Tempia
+Fronte|Cervello
+Cranio|Gamba
+Ombelico|Clavicola
+Quadricipiti|Collo
+Cranio|Alluce
+Schiena|Peli
+Cuore|Polso
+Forfora|Appendice
+Fegato|Bicipite
+Palpebra|Gomito
+Arco plantare|Schiena
+Gamba|DNA
+Lingua|Pianta del piede
+Pollice|Diaframma
+Cicatrice|Trachea
+Pianta del piede|Tonsille
+Zigomo|Globuli rossi
+Piede|Braccio
+Caviglia|Lacrime
+Cranio|Scapola
+Labbra|Anca
+Scapola|Labbra
+Femore|Pupilla
+Pelle|Stinco
+Ombelico|Mento
+Stomaco|Capillari
+Baffi|Quadricipiti
+Tiroide|Narice
+Mento|Cellula
+Dito|DNA
+Tiroide|Forfora
+Girovita|Forfora
+Pettorali|Vena
+Coscia|Petto
+Mignolo|Trachea
+Alluce|Anulare
+Scapola|Mascella
+Rene|Pancia
+Tendine d'Achille|Mascella
+Avambraccio|Narice
+Brufolo|Anulare
+Mento|Gamba
+Peli|Calcagno
+Gengiva|Appendice
+Braccio|Colonna vertebrale
+Sedere|Occhio
+Ginocchio|Indice
+Coscia|Brufolo
+Diaframma|Esofago
+Ombelico|Dente
+Intestino|Rughe
+Pupilla|Scheletro
+Cistifellea|Addominali
+Capillari|Palato
+Neurone|Mignolo
+Ascella|Pelle d'oca
+Baffi|Spalla
+Anca|Barba
+Fianco|Tendine d'Achille
+Nocche|Vescica
+Bocca|Mignolo
+Occhio|Gomito
+Unghia|Bocca
+Tallone|Gomito
+Guancia|Milza
+Piede|Tonsille
+Costola|Mano
+Cellula|Polso
+Nervo|Esofago
+Arco plantare|Cistifellea
+Tibia|Lingua
+Zigomo|DNA
+Indice|Sedere
+Colon|Naso
+Polmone|Palmo
+Petto|Polpaccio
+Vescica|Tricipite
+Zigomo|Palmo
+Orecchio|Ginocchio
 `}
 };
 
 // Converte le righe in coppie {c: civile, i: impostore}
-for (const k in TEMI) {
-  TEMI[k].coppie = TEMI[k].coppie.trim().split("\n").map(r => { const [c, i] = r.split("|"); return { c: c.trim(), i: i.trim() }; });
+const LIVELLI = ["facile", "difficile"];
+for (const k in TEMI) for (const lv of LIVELLI) {
+  TEMI[k][lv] = TEMI[k][lv].trim().split("\n").map(r => { const [c, i] = r.split("|"); return { c: c.trim(), i: i.trim() }; });
 }
 if (typeof module !== "undefined") module.exports = TEMI;
