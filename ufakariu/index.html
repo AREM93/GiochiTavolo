@@ -237,6 +237,7 @@ const S = {
   // "simile": l'impostore ha una parola diversa e non sa di esserlo
   // "tema":   sa di essere l'impostore e vede solo il tema
   // "buio":   sa di essere l'impostore e non conosce né la parola né il tema
+  // "svelato": sa di essere l'impostore, conosce il tema e ha la sua parola (diversa da quella dei civili)
   mode: ({ sa: "tema" })[load("mode", "simile")] || load("mode", "simile"),
   livello: load("livello", "facile"),   // "facile" | "difficile"
   names: load("names", []),
@@ -289,7 +290,7 @@ function dealRound() {
 function wordFor(i) {
   const r = S.roles[i];
   if (r === "bianco") return null;
-  if (r === "impostore") return S.mode === "simile" ? S.wordI : null;
+  if (r === "impostore") return (S.mode === "simile" || S.mode === "svelato") ? S.wordI : null;
   return S.wordC;
 }
 
@@ -389,6 +390,7 @@ V.setup = () => `
       <button aria-pressed="${S.mode === "simile"}" data-act="mode" data-k="simile">ha una parola diversa<br><small>e non sa di essere l'impostore</small></button>
       <button aria-pressed="${S.mode === "tema"}" data-act="mode" data-k="tema">sa di essere l'impostore<br><small>non sa la parola, vede solo il tema</small></button>
       <button aria-pressed="${S.mode === "buio"}" data-act="mode" data-k="buio">sa di essere l'impostore<br><small>non sa né la parola né il tema</small></button>
+      <button aria-pressed="${S.mode === "svelato"}" data-act="mode" data-k="svelato">sa di essere l'impostore<br><small>conosce il tema e ha la sua parola</small></button>
     </div>
   </div>
   <div class="panel">
@@ -397,7 +399,7 @@ V.setup = () => `
       <button aria-pressed="${S.livello === "facile"}" data-act="livello" data-k="facile">Facile<br><small>parole lontane</small></button>
       <button aria-pressed="${S.livello === "difficile"}" data-act="livello" data-k="difficile">Difficile<br><small>parole quasi uguali</small></button>
     </div>
-    <p class="sub" style="font-size:14px">${S.mode === "simile"
+    <p class="sub" style="font-size:14px">${(S.mode === "simile" || S.mode === "svelato")
       ? (S.livello === "facile" ? "Esempio: i civili hanno «Ribollita», l'impostore «Churros». Si nota presto." : "Esempio: i civili hanno «Pizza», l'impostore «Focaccia». Bisogna ascoltare bene.")
       : (S.livello === "facile" ? "Parole semplici e conosciute: l'impostore fatica a stare dietro alle descrizioni." : "Parole più ricercate: anche i civili devono stare attenti a cosa dicono.")}</p>
   </div>
@@ -452,6 +454,10 @@ V.pass = () => {
     <span class="tag" style="--c:var(--white)">Omino bianco</span>
     <div class="word">Nessuna parola</div>
     <p class="hint">Ascolta gli altri e fingi di saperla. Se ti eliminano puoi provare a indovinarla.</p>`;
+  else if (r === "impostore" && S.mode === "svelato") back = `
+    <span class="tag" style="--c:var(--danger)">Impostore · ${esc(t.nome)}</span>
+    <div class="word">${esc(S.wordI)}</div>
+    <p class="hint">Sai di essere l'impostore. I civili hanno un'altra parola dello stesso tema: descrivi la tua senza farti scoprire.</p>`;
   else if (r === "impostore" && S.mode === "buio") back = `
     <span class="tag" style="--c:var(--danger)">Impostore</span>
     <div class="word">???</div>
@@ -524,7 +530,7 @@ V.end = () => {
   </div>
   <div class="words">
     <div class="wbox"><span class="label">Parola dei civili</span><b>${esc(S.wordC)}</b></div>
-    <div class="wbox"><span class="label">Impostore</span><b>${S.mode === "simile" ? esc(S.wordI) : S.mode === "tema" ? "Solo il tema" : "Niente"}</b></div>
+    <div class="wbox"><span class="label">Impostore</span><b>${(S.mode === "simile" || S.mode === "svelato") ? esc(S.wordI) : S.mode === "tema" ? "Solo il tema" : "Niente"}</b></div>
   </div>
   <div class="players">
     ${S.names.map((nm, i) => `<div class="pcard ${S.roles[i] !== "civile" ? "first" : ""}" style="${S.roles[i] === "impostore" ? "border-color:var(--danger)" : S.roles[i] === "bianco" ? "border-color:var(--white);border-style:dashed" : ""}">
@@ -544,7 +550,7 @@ O.rules = () => `
   <h2 class="h2" id="rt">Regole</h2>
   <ol class="rules">
     <li><b>Preparazione.</b> Da 4 a 10 giocatori. Fino a 6 c'è 1 impostore; da 7 in su ci sono 1 impostore e 1 omino bianco.</li>
-    <li><b>Le parole.</b> I civili ricevono tutti la stessa parola. L'impostore, a seconda della modalità, riceve una parola diversa ma collegata, oppure solo il tema, oppure niente del tutto.</li>
+    <li><b>Le parole.</b> I civili ricevono tutti la stessa parola. L'impostore, a seconda della modalità, riceve una parola diversa ma collegata (sapendo o non sapendo di essere l'impostore), oppure solo il tema, oppure niente del tutto.</li>
     <li><b>Difficoltà.</b> In <b>facile</b> la parola dell'impostore è lontana da quella dei civili e si sgama presto. In <b>difficile</b> le due parole sono quasi uguali. L'omino bianco non riceve niente.</li>
     <li><b>Il giro.</b> Partendo da chi indica l'app, ognuno dice una sola parola o una breve frase legata alla sua parola, senza dirla.</li>
     <li><b>Il voto.</b> Dopo uno o due giri discutete e votate chi eliminare. Toccate il suo nome per scoprire il ruolo.</li>
@@ -568,7 +574,7 @@ O.vote = () => {
 O.outcome = () => {
   const i = S.overlay.i, r = S.roles[i];
   const txt = r === "civile" ? ["Era un civile", "var(--good)", "Avete eliminato un innocente. La partita continua."]
-    : r === "impostore" ? ["Era l'impostore!", "var(--danger)", S.mode === "simile" ? `La sua parola era «${esc(S.wordI)}».` : "Ben scovato."]
+    : r === "impostore" ? ["Era l'impostore!", "var(--danger)", (S.mode === "simile" || S.mode === "svelato") ? `La sua parola era «${esc(S.wordI)}».` : "Ben scovato."]
     : ["Era l'omino bianco", "var(--white)", "Ora può provare a indovinare la parola dei civili, ad alta voce."];
   return `
 <div class="sheet" role="dialog" aria-modal="true">
