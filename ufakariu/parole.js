@@ -1,6 +1,7 @@
 /* UFAKARIU – database parole.
    Ogni riga è una coppia "parola dei civili|parola dell'impostore".
-   Per ogni tema ci sono due livelli da 150 coppie ciascuno (300 coppie = 600 parole per tema):
+   Temi classici: due livelli da 150 coppie ciascuno (300 coppie = 600 parole per tema).
+   Cosmetici, Brand e Cartoni: 50 parole per i civili, ognuna con un'associata facile e una difficile.
    - difficile: la parola dell'impostore è molto simile a quella dei civili (difficile sgamarlo)
    - facile: la parola dell'impostore è lontana da quella dei civili (facile sgamarlo) */
 const TEMI = {
@@ -2443,6 +2444,321 @@ Petto|Polpaccio
 Vescica|Tricipite
 Zigomo|Palmo
 Orecchio|Ginocchio
+`},
+cosmetici: { nome: "Cosmetici e trucchi", colore: "--t-cosmetici",
+difficile: `
+Lucidalabbra|Burrocacao
+Matita occhi|Eyeliner
+Ombretto|Glitter per occhi
+Blush|Terra abbronzante
+Primer|Fissatore trucco
+Cipria|Polvere illuminante
+Ciglia finte|Extension ciglia
+Unghie finte|Unghie in gel
+Struccante|Acqua micellare
+Crema idratante|Siero viso
+Maschera viso|Patch occhi
+Tonico|Lozione astringente
+Illuminante|Contouring
+Tinta labbra|Matita labbra
+BB cream|CC cream
+Acqua di colonia|Eau de parfum
+Latte detergente|Mousse detergente
+Olio abbronzante|Doposole
+Crema depilatoria|Strisce depilatorie
+Smalto semipermanente|Top coat
+Solvente per unghie|Acetone
+Beauty blender|Pennello kabuki
+Crema contorno occhi|Siero occhi
+Crema corpo|Olio corpo
+Sali da bagno|Bomba da bagno
+Sapone liquido|Gel doccia
+Maschera per capelli|Impacco per capelli
+Henné|Mèches
+Correttore per occhiaie|Primer occhi
+Crema antiacne|Patch antibrufoli
+Cera per capelli|Pasta modellante
+Spray termoprotettore|Siero per punte
+Olio struccante|Balsamo struccante
+Antitraspirante|Talco
+Crema da barba|Gel da barba
+Body mist|Acqua profumata
+Crema notte|Crema giorno
+Pennello da barba|Lametta
+Regolabarba|Rifinitore
+Maschera all'argilla|Maschera peel-off
+Base per unghie|Indurente per unghie
+Crema anticellulite|Crema rassodante
+Peeling|Esfoliante viso
+Acido ialuronico|Retinolo
+Crema viso SPF|Fluido protettivo
+Decolorante|Tonalizzante
+Tatuaggi temporanei|Glitter corpo
+Correttore verde|Correttore lilla
+Spray fissante|Polvere opacizzante
+Gommage|Scrub viso
+`,
+facile: `
+Lucidalabbra|Lacca per capelli
+Matita occhi|Crema mani
+Ombretto|Dentifricio
+Blush|Collutorio
+Primer|Olio per capelli
+Cipria|Gel per capelli
+Ciglia finte|Crema antirughe
+Unghie finte|Scrub corpo
+Struccante|Autoabbronzante
+Crema idratante|Kajal
+Maschera viso|Matita sopracciglia
+Tonico|Pennello da trucco
+Illuminante|Crema piedi
+Tinta labbra|Schiuma per capelli
+BB cream|Spazzola lisciante
+Acqua di colonia|Bigodini
+Latte detergente|Ceretta
+Olio abbronzante|Rasoio da donna
+Crema depilatoria|Lima di vetro
+Smalto semipermanente|Shampoo antiforfora
+Solvente per unghie|Spugnetta trucco
+Beauty blender|Tinta per capelli
+Crema contorno occhi|Ferro arricciacapelli
+Crema corpo|Sopracciglia tatuate
+Sali da bagno|Ciglia magnetiche
+Sapone liquido|Fard
+Maschera per capelli|Palette ombretti
+Henné|Burro di karitè
+Correttore per occhiaie|Balsamo per barba
+Crema antiacne|Smalto glitter
+Cera per capelli|Ombretto metallico
+Spray termoprotettore|Tinta per sopracciglia
+Olio struccante|Spazzola per barba
+Antitraspirante|Matita bianca
+Crema da barba|Ombretto liquido
+Body mist|Fissatore per sopracciglia
+Crema notte|Spray volumizzante
+Pennello da barba|Gloss
+Regolabarba|Bronzer
+Maschera all'argilla|Olio per cuticole
+Base per unghie|Polvere fissante
+Crema anticellulite|Matita khol
+Peeling|Ombretto in crema
+Acido ialuronico|Eyeliner a penna
+Crema viso SPF|Brillantini
+Decolorante|Tinta guance
+Tatuaggi temporanei|Crema antimacchie
+Correttore verde|Olio di argan
+Spray fissante|Crema per tatuaggi
+Gommage|Ombretto glitter
+`},
+brand: { nome: "Brand di cibo e bevande", colore: "--t-brand",
+difficile: `
+Pepsi|Coca-Cola Zero
+Fanta|Oransoda
+Sprite|Lemonsoda
+Schweppes|San Pellegrino
+Ferrarelle|Levissima
+Sant'Anna|Lete
+Estathé|Lipton
+Red Bull|Monster
+Gatorade|Powerade
+Peroni|Birra Moretti
+Heineken|Birra Corona
+Campari|Aperol
+Averna|Ramazzotti
+Lavazza|Illy
+Nescafé|Kimbo
+Nespresso|Dolce Gusto
+Crodino|Sanbittèr
+Skipper|Santàl
+Barilla|Divella
+De Cecco|Rummo
+Mutti|Cirio
+Star|Maggi
+Simmenthal|Montana
+Granarolo|Mukki
+Müller|Yomo
+Activia|Actimel
+Pan di Stelle|Gocciole
+Ritz|Tuc
+Fonzies|San Carlo
+Amica Chips|Pata
+Loacker|Balocco
+Kit Kat|Twix
+Mars|Snickers
+Bounty|Raffaello
+M&M's|Smarties
+Duplo|Kinder Maxi
+Magnum|Solero
+Calippo|Sammontana
+Buondì|Brioss
+Fiesta|Tegolino
+Lindt|Milka
+Toblerone|Novi
+Baci Perugina|Lindor
+Big Babol|Brooklyn
+Vigorsol|Daygum
+Golia|Morositas
+Sperlari|Galatine
+Kinder Sorpresa|Kinder Joy
+Togo|Abbracci
+Grisbì|Gentilini
+`,
+facile: `
+Pepsi|Mulino Bianco
+Fanta|Parmalat
+Sprite|Galbani
+Schweppes|Rio Mare
+Ferrarelle|Pringles
+Sant'Anna|Kinder Bueno
+Estathé|Buitoni
+Red Bull|Findus
+Gatorade|Algida
+Peroni|Danone
+Heineken|Plasmon
+Campari|Kellogg's
+Averna|Saiwa
+Lavazza|Pavesi
+Nescafé|Bonduelle
+Nespresso|Knorr
+Crodino|Philadelphia
+Skipper|Pocket Coffee
+Barilla|Bacardi
+De Cecco|Jägermeister
+Mutti|Haribo
+Star|Ringo
+Simmenthal|Tic Tac
+Granarolo|Mentos
+Müller|Chupa Chups
+Activia|Vecchia Romagna
+Pan di Stelle|Fernet-Branca
+Ritz|Montenegro
+Fonzies|Amaro Lucano
+Amica Chips|Disaronno
+Loacker|Berlucchi
+Kit Kat|Bertolli
+Mars|Monini
+Bounty|Valfrutta
+M&M's|Zuegg
+Duplo|Del Monte
+Magnum|Bauli
+Calippo|Fiorucci
+Buondì|Rovagnati
+Fiesta|Beretta
+Lindt|Cedrata Tassoni
+Toblerone|Aia
+Baci Perugina|Amadori
+Big Babol|Sofficini
+Vigorsol|Quattro Salti in Padella
+Golia|Vitasnella
+Sperlari|Giovanni Rana
+Kinder Sorpresa|Pomì
+Togo|Bel Paese
+Grisbì|Amarena Fabbri
+`},
+cartoni: { nome: "Cartoni Disney e DreamWorks", colore: "--t-cartoni",
+difficile: `
+Il Re Leone|Il libro della giungla
+La Sirenetta|Oceania
+Frozen|Rapunzel
+Aladdin|Il principe d'Egitto
+Cenerentola|La bella addormentata nel bosco
+Biancaneve e i sette nani|La bella e la bestia
+Toy Story|Monsters & Co.
+Alla ricerca di Nemo|Alla ricerca di Dory
+Cars|Planes
+Up|Wall-E
+Bambi|Red e Toby nemiciamici
+Dumbo|Lilli e il vagabondo
+Peter Pan|Pinocchio
+Mulan|Pocahontas
+Hercules|Atlantis
+Tarzan|Koda fratello orso
+La carica dei 101|Oliver & Company
+Gli Aristogatti|Bolt
+Zootropolis|Robin Hood
+Encanto|Coco
+Lilo & Stitch|Il pianeta del tesoro
+La principessa e il ranocchio|Ribelle
+Inside Out|Soul
+Gli Incredibili|Big Hero 6
+Ralph Spaccatutto|Lightyear
+Topolino|Minnie
+Paperino|Paperina
+Pippo|Pluto
+Zio Paperone|Gastone
+Cip e Ciop|Qui Quo Qua
+Winnie the Pooh|Tigro
+Olaf|Sven
+Elsa|Anna
+Simba|Nala
+Timon e Pumbaa|Rafiki
+Genio|Jafar
+Ursula|Malefica
+Crudelia De Mon|Madame Medusa
+Capitan Uncino|Ade
+Trilli|Fata Smemorina
+Woody|Jessie
+Buzz Lightyear|Zurg
+Saetta McQueen|Cricchetto
+Nemo|Marlin
+Sulley|Mike Wazowski
+Stitch|Angel
+Jasmine|Belle
+Ariel|Vaiana
+Mowgli|Baloo
+Quasimodo|La Bestia
+`,
+facile: `
+Il Re Leone|Shrek
+La Sirenetta|Kung Fu Panda
+Frozen|Madagascar
+Aladdin|Dragon Trainer
+Cenerentola|Baby Boss
+Biancaneve e i sette nani|Il gatto con gli stivali
+Toy Story|Trolls
+Alla ricerca di Nemo|Megamind
+Cars|Spirit
+Up|Shark Tale
+Bambi|Galline in fuga
+Dumbo|Z la formica
+Peter Pan|Bee Movie
+Mulan|Il piccolo yeti
+Hercules|I Croods
+Tarzan|Mostri contro alieni
+La carica dei 101|Turbo
+Gli Aristogatti|Home
+Zootropolis|Le 5 leggende
+Encanto|Sinbad
+Lilo & Stitch|Troppo cattivi
+La principessa e il ranocchio|La strada per El Dorado
+Inside Out|Il robot selvaggio
+Gli Incredibili|Capitan Mutanda
+Ralph Spaccatutto|Mr. Peabody e Sherman
+Topolino|Fiona
+Paperino|Ciuchino
+Pippo|Po
+Zio Paperone|Sdentato
+Cip e Ciop|Re Julien
+Winnie the Pooh|Alex il leone
+Olaf|Pinguini di Madagascar
+Elsa|Lord Farquaad
+Simba|Marty la zebra
+Timon e Pumbaa|Tigre
+Genio|Maestro Shifu
+Ursula|Gloria l'ippopotamo
+Crudelia De Mon|Melman la giraffa
+Capitan Uncino|Hiccup
+Trilli|Astrid
+Woody|Branch
+Buzz Lightyear|Poppy
+Saetta McQueen|Mr. Wolf
+Nemo|Wallace e Gromit
+Sulley|Ginger
+Stitch|Ruby Gillman
+Jasmine|Mr. Snake
+Ariel|Roz
+Mowgli|Jack Frost
+Quasimodo|Maestro Oogway
 `}
 };
 
