@@ -143,6 +143,13 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); ou
 .counter { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .counter button { width: 56px; height: 56px; border-radius: 50%; background: var(--bg-2); border: 2px solid var(--line); font-size: 28px; font-weight: 800; line-height: 1; }
 .counter button:disabled { opacity: .35; }
+.roles-edit { display: flex; flex-direction: column; gap: 8px; }
+.mini-counter { display: grid; grid-template-columns: 1fr 40px 32px 40px; align-items: center; gap: 8px; padding: 6px 6px 6px 12px; border-radius: 14px; background: var(--bg-2); border: 1px solid var(--line); }
+.mini-counter.civ { grid-template-columns: 1fr 32px 40px; padding-block: 10px; }
+.mini-counter button { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--line); background: var(--surface); font-size: 20px; font-weight: 800; line-height: 1; }
+.mini-counter button:disabled { opacity: .35; cursor: not-allowed; }
+.mc-label { display: flex; align-items: center; gap: 8px; font-weight: 600; min-width: 0; }
+.mc-val { text-align: center; font-weight: 800; font-size: 20px; font-variant-numeric: tabular-nums; }
 .count { font-family: var(--font-display); font-size: 64px; line-height: 1; font-variant-numeric: tabular-nums; }
 .roles { display: flex; flex-wrap: wrap; gap: 8px; }
 .pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 14px; font-weight: 600; background: var(--bg-2); border: 1px solid var(--line); }
@@ -244,7 +251,9 @@ const S = {
   // "buio":   sa di essere l'impostore e non conosce né la parola né il tema
   // "svelato": sa di essere l'impostore, conosce il tema e ha la sua parola (diversa da quella dei civili)
   mode: ({ sa: "tema" })[load("mode", "simile")] || load("mode", "simile"),
-  livello: load("livello", "facile"),   // "facile" | "difficile"
+  livello: load("livello", "facile"),
+  imp: load("imp", 1),
+  white: load("white", load("n", 5) >= 7 ? 1 : 0),   // "facile" | "difficile"
   names: load("names", []),
   nameIdx: 0,
   roles: [], theme: null, wordC: "", wordI: "",
@@ -263,15 +272,24 @@ const rnd = (n) => Math.floor(Math.random() * n);
 const pick = (a) => a[rnd(a.length)];
 function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 
-function roleSetup(n) { return n >= 7 ? { imp: 1, white: 1 } : { imp: 1, white: 0 }; }
+// Ruoli scelti dai giocatori. Regola: i civili devono essere più di impostori + omini bianchi,
+// e ci deve essere almeno un impostore o un omino bianco.
+const maxCattivi = (n) => Math.floor((n - 1) / 2);
+function fixRuoli() {
+  S.imp = Math.max(0, S.imp); S.white = Math.max(0, S.white);
+  while (S.imp + S.white > maxCattivi(S.n)) { if (S.white > 0) S.white--; else S.imp--; }
+  if (S.imp + S.white < 1) S.imp = 1;
+  save("imp", S.imp); save("white", S.white);
+}
+function roleSetup() { return { imp: S.imp, white: S.white }; }
 
 function dealRound() {
   const n = S.n;
-  const { white } = roleSetup(n);
+  const { imp, white } = roleSetup();
   const roles = Array(n).fill("civile");
   const idx = shuffle([...Array(n).keys()]);
-  roles[idx[0]] = "impostore";
-  if (white) roles[idx[1]] = "bianco";
+  for (let k = 0; k < imp; k++) roles[idx[k]] = "impostore";
+  for (let k = 0; k < white; k++) roles[idx[imp + k]] = "bianco";
   S.roles = roles;
 
   // tema casuale; mai una parola già uscita in questa sessione
@@ -332,14 +350,22 @@ const avatar = (i, cls = "") => `<div class="avatar ${cls}" style="--c:var(${AVA
 const themeColor = (k) => `var(${TEMI[k].colore})`;
 
 function rolesSummary(n) {
-  const r = roleSetup(n);
-  const civ = n - r.imp - r.white;
-  return `<div class="roles">
-    <span class="pill"><span class="dot" style="--c:var(--good)"></span>${civ} civili</span>
-    <span class="pill"><span class="dot" style="--c:var(--danger)"></span>1 impostore</span>
-    ${r.white ? `<span class="pill"><span class="dot wh"></span>1 omino bianco</span>` : ""}
+  const max = maxCattivi(n);
+  const riga = (key, label, dot, val, canDec, canInc) => `
+    <div class="mini-counter">
+      <span class="mc-label"><span class="dot ${dot}" style="--c:var(--danger)"></span>${label}</span>
+      <button data-act="dec-${key}" aria-label="Meno ${label}" ${canDec ? "" : "disabled"}>&minus;</button>
+      <span class="mc-val">${val}</span>
+      <button data-act="inc-${key}" aria-label="Più ${label}" ${canInc ? "" : "disabled"}>+</button>
+    </div>`;
+  const tot = S.imp + S.white;
+  return `<div class="roles-edit">
+    ${riga("imp", "Impostori", "", S.imp, S.imp > 0 && tot > 1, tot < max)}
+    ${riga("white", "Omini bianchi", "wh", S.white, S.white > 0 && tot > 1, tot < max)}
+    <div class="mini-counter civ"><span class="mc-label"><span class="dot" style="--c:var(--good)"></span>Civili</span><span class="mc-val">${n - tot}</span></div>
   </div>`;
 }
+const plurale = (k, uno, tanti) => k === 1 ? uno : tanti;
 
 const V = {};
 
@@ -381,7 +407,7 @@ V.setup = () => `
       <button data-act="inc" aria-label="Più giocatori" ${S.n >= MAX ? "disabled" : ""}>+</button>
     </div>
     ${rolesSummary(S.n)}
-    <p class="sub" style="font-size:14px">${S.n >= 7 ? "Da 7 giocatori entra in gioco anche l'omino bianco: non ha nessuna parola e deve improvvisare." : "Fino a 6 giocatori c'è un solo impostore. Da 7 si aggiunge l'omino bianco."}</p>
+    <p class="sub" style="font-size:14px">L'omino bianco non ha nessuna parola e deve improvvisare. Con ${S.n} giocatori potete avere al massimo ${maxCattivi(S.n)} tra impostori e omini bianchi: i civili devono restare in maggioranza.</p>
   </div>
   <div class="panel">
     <div class="row-between"><span class="label">Tema</span><span class="step">a sorpresa</span></div>
@@ -476,6 +502,10 @@ V.pass = () => {
     <div class="word">${esc(w)}</div>
     <p class="hint">Memorizzala. Non dirla a nessuno.</p>`;
 
+  // chi sa di essere impostore vede anche i nomi dei complici
+  const complici = S.names.filter((_, j) => j !== i && S.roles[j] === "impostore");
+  if (r === "impostore" && S.mode !== "simile" && complici.length)
+    back += `<p class="hint"><b>${plurale(complici.length, "Il tuo complice", "I tuoi complici")}:</b> ${complici.map(esc).join(", ")}</p>`;
   return `
 <section class="screen">
   <div class="top">${brand()}<span class="step">${i + 1} / ${S.n}</span></div>
@@ -523,7 +553,11 @@ V.play = () => {
 
 V.end = () => {
   const w = S.winner;
-  const title = w === "civili" ? "Vincono i civili" : w === "impostori" ? "Vince l'impostore" : w === "bianco" ? "Vince l'omino bianco" : "Partita svelata";
+  const nImp = S.roles.filter(r => r === "impostore").length, nWh = S.roles.filter(r => r === "bianco").length;
+  const titoloCattivi = nImp && nWh ? "Vincono impostori e omini bianchi"
+    : nImp ? plurale(nImp, "Vince l'impostore", "Vincono gli impostori")
+    : plurale(nWh, "Vince l'omino bianco", "Vincono gli omini bianchi");
+  const title = w === "civili" ? "Vincono i civili" : w === "impostori" ? titoloCattivi : w === "bianco" ? "Vince l'omino bianco" : "Partita svelata";
   const col = w === "civili" ? "var(--good)" : w === "bianco" ? "var(--white)" : w === "impostori" ? "var(--danger)" : "var(--accent)";
   const roleName = (r) => r === "civile" ? "Civile" : r === "impostore" ? "Impostore" : "Omino bianco";
   return `
@@ -554,13 +588,13 @@ O.rules = () => `
 <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="rt">
   <h2 class="h2" id="rt">Regole</h2>
   <ol class="rules">
-    <li><b>Preparazione.</b> Da 4 a 10 giocatori. Fino a 6 c'è 1 impostore; da 7 in su ci sono 1 impostore e 1 omino bianco.</li>
+    <li><b>Preparazione.</b> Da 4 a 10 giocatori. All'inizio scegliete quanti impostori e quanti omini bianchi: serve almeno uno dei due, e i civili devono essere più di loro.</li>
     <li><b>Le parole.</b> I civili ricevono tutti la stessa parola. L'impostore, a seconda della modalità, riceve una parola diversa ma collegata (sapendo o non sapendo di essere l'impostore), oppure solo il tema, oppure niente del tutto.</li>
     <li><b>Difficoltà.</b> In <b>facile</b> la parola dell'impostore è lontana da quella dei civili e si sgama presto. In <b>difficile</b> le due parole sono quasi uguali. L'omino bianco non riceve niente.</li>
     <li><b>Il giro.</b> Partendo da chi indica l'app, ognuno dice una sola parola o una breve frase legata alla sua parola, senza dirla.</li>
     <li><b>Il voto.</b> Dopo uno o due giri discutete e votate chi eliminare. Toccate il suo nome per scoprire il ruolo.</li>
     <li><b>L'omino bianco.</b> Se viene eliminato può provare a indovinare la parola dei civili: se ci riesce vince lui.</li>
-    <li><b>Chi vince.</b> I civili vincono se eliminano impostore e omino bianco. L'impostore vince se resta in gioco quando i civili non sono più di lui e dei suoi complici.</li>
+    <li><b>Chi vince.</b> I civili vincono se eliminano tutti gli impostori e gli omini bianchi. Impostori e omini bianchi vincono se arrivano a essere tanti quanti i civili rimasti.</li>
   </ol>
   <button class="btn" data-act="close">Ho capito</button>
 </div>`;
@@ -639,8 +673,12 @@ document.addEventListener("click", (e) => {
     case "rules": S.overlay = { type: "rules" }; render(); break;
     case "close": S.overlay = null; render(); break;
     case "backdrop": if (e.target === el && S.overlay && S.overlay.type !== "outcome") { S.overlay = null; render(); } break;
-    case "dec": S.n = Math.max(MIN, S.n - 1); save("n", S.n); render(); break;
-    case "inc": S.n = Math.min(MAX, S.n + 1); save("n", S.n); render(); break;
+    case "dec": S.n = Math.max(MIN, S.n - 1); save("n", S.n); fixRuoli(); render(); break;
+    case "inc": S.n = Math.min(MAX, S.n + 1); save("n", S.n); fixRuoli(); render(); break;
+    case "dec-imp": S.imp--; fixRuoli(); render(); break;
+    case "inc-imp": S.imp++; fixRuoli(); render(); break;
+    case "dec-white": S.white--; fixRuoli(); render(); break;
+    case "inc-white": S.white++; fixRuoli(); render(); break;
     case "mode": S.mode = el.dataset.k; save("mode", S.mode); render(); break;
     case "livello": S.livello = el.dataset.k; save("livello", S.livello); render(); break;
     case "go-names": S.nameIdx = 0; go("names"); break;
@@ -684,6 +722,7 @@ function afterOut() {
   else { S.overlay = null; render(); }
 }
 
+fixRuoli();
 render();
 </script>
 </body>

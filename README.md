@@ -5,7 +5,7 @@
 Gioco dell'impostore per serate tra amici: `ufakariu/index.html` + database parole `ufakariu/parole.js`.
 Aprilo nel browser del telefono e passalo di mano in mano.
 
-- Da 4 a 10 giocatori. Fino a 6: 1 impostore. Da 7: 1 impostore + 1 omino bianco (senza parola).
+- Da 4 a 10 giocatori. Si sceglie quanti impostori e quanti omini bianchi (senza parola): almeno uno dei due, e i civili devono restare in maggioranza.
 - Ognuno scrive il suo nome, poi viene chiamato a turno a vedere la sua parola.
 - Tema scelto a caso dal gioco a ogni partita tra: cibo, ambienti, città, automobili, sport, attori, oggetti, parti del corpo, cosmetici e trucchi, brand di cibo e bevande, cartoni Disney e DreamWorks.
 - Database: per ogni tema 150 coppie *facili* (parola dell'impostore lontana) e 150 *difficili* (quasi uguale): 600 parole per ognuno degli 8 temi classici; i temi Cosmetici, Brand e Cartoni hanno 50 parole per i civili, ognuna con un'associata facile e una difficile (150 parole per tema). Nella stessa sessione nessuna parola viene riproposta.
