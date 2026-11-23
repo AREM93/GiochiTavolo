@@ -1,7 +1,7 @@
 /* UFAKARIU – database parole.
    Ogni riga è una coppia "parola dei civili|parola dell'impostore".
    Temi classici: due livelli da 150 coppie ciascuno (300 coppie = 600 parole per tema).
-   Cosmetici, Brand e Cartoni: 50 parole per i civili, ognuna con un'associata facile e una difficile.
+   Personaggi famosi, Cosmetici, Brand e Cartoni: 50 parole per i civili, ognuna con un'associata facile e una difficile.
    - difficile: la parola dell'impostore è molto simile a quella dei civili (difficile sgamarlo)
    - facile: la parola dell'impostore è lontana da quella dei civili (facile sgamarlo) */
 const TEMI = {
@@ -1530,310 +1530,110 @@ Rally Dakar|Equitazione
 Judo|Superbike
 Danza moderna|Golf
 `},
-attori: { nome: "Attori", colore: "--t-attori",
+famosi: { nome: "Personaggi famosi", colore: "--t-attori",
 difficile: `
-Roberto Benigni|Massimo Troisi
-Totò|Peppino De Filippo
-Alberto Sordi|Nino Manfredi
-Sophia Loren|Gina Lollobrigida
-Marcello Mastroianni|Vittorio Gassman
-Monica Bellucci|Claudia Cardinale
-Pierfrancesco Favino|Elio Germano
-Checco Zalone|Ficarra e Picone
-Carlo Verdone|Enrico Brignano
-Paola Cortellesi|Virginia Raffaele
-Toni Servillo|Silvio Orlando
-Luca Argentero|Raoul Bova
-Claudio Bisio|Fabio De Luigi
-Christian De Sica|Massimo Boldi
-Aldo Giovanni e Giacomo|Lopez Marchesini e Solenghi
-Leonardo DiCaprio|Matt Damon
+Leonardo DiCaprio|Johnny Depp
 Brad Pitt|George Clooney
-Angelina Jolie|Megan Fox
-Johnny Depp|Orlando Bloom
-Tom Cruise|Jason Statham
-Tom Hanks|Robin Williams
+Tom Cruise|Keanu Reeves
+Angelina Jolie|Jennifer Aniston
 Julia Roberts|Sandra Bullock
-Meryl Streep|Glenn Close
+Will Smith|Denzel Washington
 Robert De Niro|Al Pacino
 Jim Carrey|Adam Sandler
-Will Smith|Eddie Murphy
-Morgan Freeman|Denzel Washington
-Scarlett Johansson|Natalie Portman
-Jennifer Lawrence|Emma Stone
-Margot Robbie|Cameron Diaz
-Keanu Reeves|Nicolas Cage
 Sylvester Stallone|Arnold Schwarzenegger
-Bruce Willis|Harrison Ford
-Nicole Kidman|Cate Blanchett
-Zendaya|Millie Bobby Brown
-Ryan Gosling|Ryan Reynolds
-Robert Downey Jr.|Chris Hemsworth
-Charlie Chaplin|Buster Keaton
-Marilyn Monroe|Audrey Hepburn
+Tom Hanks|Robin Williams
+Scarlett Johansson|Natalie Portman
+Margot Robbie|Cameron Diaz
+Zendaya|Selena Gomez
 Jackie Chan|Bruce Lee
 Dwayne Johnson|Vin Diesel
+Morgan Freeman|Samuel L. Jackson
+Harrison Ford|Bruce Willis
+Meryl Streep|Nicole Kidman
+Robert Downey Jr.|Chris Hemsworth
 Emma Watson|Daniel Radcliffe
-Hugh Grant|Colin Firth
-Jack Nicholson|Anthony Hopkins
-Clint Eastwood|John Wayne
+Charlie Chaplin|Stanlio e Ollio
+Marilyn Monroe|Audrey Hepburn
+Beyoncé|Rihanna
+Madonna|Lady Gaga
+Michael Jackson|Elvis Presley
+Taylor Swift|Ariana Grande
+Roberto Benigni|Massimo Troisi
+Totò|Alberto Sordi
+Monica Bellucci|Sabrina Ferilli
+Pierfrancesco Favino|Alessandro Gassmann
+Carlo Verdone|Enrico Brignano
+Paola Cortellesi|Virginia Raffaele
+Luca Argentero|Raoul Bova
+Claudio Bisio|Fabio De Luigi
+Aldo Giovanni e Giacomo|Ficarra e Picone
 Bud Spencer|Terence Hill
-Paolo Villaggio|Lino Banfi
-Diego Abatantuono|Renato Pozzetto
-Adriano Celentano|Ornella Muti
-Anna Magnani|Monica Vitti
-Sabrina Ferilli|Valeria Golino
-Kim Rossi Stuart|Riccardo Scamarcio
-Stefano Accorsi|Alessandro Gassmann
-Ezio Greggio|Enzo Iacchetti
-Antonio Albanese|Teresa Mannino
+Adriano Celentano|Al Bano
+Eros Ramazzotti|Tiziano Ferro
+Andrea Bocelli|Luciano Pavarotti
+Måneskin|Pinguini Tattici Nucleari
+Amadeus|Alessandro Cattelan
+Gerry Scotti|Enrico Papi
+Maria De Filippi|Simona Ventura
 Alessandro Siani|Vincenzo Salemme
-Margherita Buy|Isabella Ferrari
-Giancarlo Giannini|Michele Placido
-Leonardo Pieraccioni|Giorgio Panariello
-Pio e Amedeo|Ale e Franz
-Timothée Chalamet|Tom Holland
-Pedro Pascal|Oscar Isaac
-Keira Knightley|Anne Hathaway
-Jennifer Aniston|Courteney Cox
-Matthew McConaughey|Woody Harrelson
-Christian Bale|Joaquin Phoenix
-Heath Ledger|Jared Leto
-Samuel L. Jackson|Laurence Fishburne
-Tom Hardy|Cillian Murphy
-Benedict Cumberbatch|Martin Freeman
-Kate Winslet|Emma Thompson
-Liam Neeson|Gerard Butler
-Mel Gibson|Russell Crowe
-Kevin Costner|Patrick Swayze
-John Travolta|Richard Gere
-Uma Thurman|Charlize Theron
-Penélope Cruz|Salma Hayek
-Antonio Banderas|Javier Bardem
-Jean Reno|Gérard Depardieu
-Sean Connery|Roger Moore
-Daniel Craig|Pierce Brosnan
-Henry Cavill|Chris Evans
-Gal Gadot|Emily Blunt
-Ben Stiller|Owen Wilson
-Steve Carell|Will Ferrell
-Jack Black|Seth Rogen
-Jason Momoa|Chris Pratt
-Florence Pugh|Anya Taylor-Joy
-Rowan Atkinson|Leslie Nielsen
-Chris Rock|Kevin Hart
-Danny DeVito|Joe Pesci
-Michael J. Fox|Matthew Broderick
-Elizabeth Taylor|Grace Kelly
-Humphrey Bogart|Cary Grant
-James Dean|Marlon Brando
-Jean-Claude Van Damme|Chuck Norris
-Steven Seagal|Dolph Lundgren
-Helen Mirren|Judi Dench
-Tilda Swinton|Maggie Smith
-Edoardo Leo|Marco Giallini
-Ugo Tognazzi|Gian Maria Volonté
-Massimo Ranieri|Gigi Proietti
-Valerio Mastandrea|Claudio Santamaria
-Alessandro Borghi|Luca Marinelli
-Jasmine Trinca|Micaela Ramazzotti
-Matilda De Angelis|Benedetta Porcaroli
-Vittoria Puccini|Miriam Leone
-Ambra Angiolini|Cristiana Capotondi
-Neri Marcorè|Rocco Papaleo
-Fabrizio Bentivoglio|Sergio Castellitto
-Giuseppe Battiston|Valerio Aprea
-Lillo e Greg|Il Terzo Segreto di Satira
-Frank Matano|Maccio Capatonda
-Massimo Ghini|Gianmarco Tognazzi
-Ricky Memphis|Francesco Pannofino
-Laura Morante|Valeria Bruni Tedeschi
-Stefania Sandrelli|Laura Antonelli
-Nanni Moretti|Silvio Muccino
-Gabriel Garko|Can Yaman
-Alessio Boni|Beppe Fiorello
-Lino Guanciale|Alessandro Preziosi
-Luca Zingaretti|Giorgio Tirabassi
-Andrew Garfield|Tobey Maguire
-Mark Ruffalo|Edward Norton
-Chris Pine|Zac Efron
-Channing Tatum|Bradley Cooper
-Jake Gyllenhaal|Joseph Gordon-Levitt
-Paul Rudd|Jason Bateman
-Idris Elba|Jamie Foxx
-Michael B. Jordan|John Boyega
-Viola Davis|Octavia Spencer
-Halle Berry|Lupita Nyong'o
-Jessica Chastain|Amy Adams
-Rachel McAdams|Rachel Weisz
-Reese Witherspoon|Kate Hudson
-Drew Barrymore|Meg Ryan
-Demi Moore|Sharon Stone
-Michelle Pfeiffer|Kim Basinger
-Jodie Foster|Holly Hunter
-Diane Keaton|Goldie Hawn
-Sigourney Weaver|Jamie Lee Curtis
-Dustin Hoffman|Gene Hackman
-Gary Oldman|Ralph Fiennes
-Ian McKellen|Patrick Stewart
-Paul Newman|Robert Redford
-Gregory Peck|James Stewart
-Gene Kelly|Fred Astaire
-Sophie Marceau|Juliette Binoche
-Marion Cotillard|Léa Seydoux
-Mads Mikkelsen|Christoph Waltz
+Diego Abatantuono|Renato Pozzetto
+Paolo Villaggio|Gigi Proietti
+Marcello Mastroianni|Vittorio Gassman
+Anna Magnani|Monica Vitti
+Jennifer Lawrence|Emma Stone
+Ryan Reynolds|Chris Evans
 `,
 facile: `
-Shirley Temple|Danny Trejo
-Macaulay Culkin|Betty White
-John Belushi|Jessica Lange
-Dan Aykroyd|Kim Novak
-Bill Murray|Jane Fonda
-Steve Martin|Faye Dunaway
-Eddie Redmayne|Whoopi Goldberg
-Hugh Laurie|Lucy Liu
-Simon Pegg|Michelle Yeoh
-Nick Frost|Gong Li
-Sacha Baron Cohen|Ingrid Bergman
-Tom Selleck|Bette Davis
-David Hasselhoff|Greta Garbo
-Pamela Anderson|Peter Sellers
-Jennifer Lopez|Christopher Walken
-Lady Gaga|Boris Karloff
-Cher|Tim Roth
-Madonna|Harvey Keitel
-Kristen Wiig|Stellan Skarsgård
-Melissa McCarthy|Willem Dafoe
-Tina Fey|Ed Harris
-Amy Poehler|Tommy Lee Jones
-Sarah Jessica Parker|Danny Glover
-Kim Cattrall|Ving Rhames
-Lisa Kudrow|Forest Whitaker
-Matthew Perry|Frances McDormand
-Matt LeBlanc|Olivia Colman
-David Schwimmer|Saoirse Ronan
-Jim Parsons|Jessica Tandy
-Bryan Cranston|Natalie Wood
-Aaron Paul|Vivien Leigh
-Kit Harington|Eva Mendes
-Emilia Clarke|Woody Allen
-Peter Dinklage|Elle Fanning
-Sophie Turner|Billy Crystal
-Maisie Williams|Mickey Rourke
-Finn Wolfhard|Raquel Welch
-Winona Ryder|Kurt Russell
-David Harbour|Brigitte Bardot
-Jenna Ortega|Burt Reynolds
-Sydney Sweeney|Charles Bronson
-Austin Butler|Doris Day
-Barry Keoghan|Rita Hayworth
-Paul Mescal|Ava Gardner
-Jacob Elordi|Lauren Bacall
-Dev Patel|Catherine Deneuve
-Rami Malek|Liv Tyler
-Ana de Armas|Ben Kingsley
-Eva Green|Anthony Quinn
-Sandra Oh|Kirk Douglas
-Awkwafina|Michael Douglas
-Mila Kunis|Bob Hoskins
-Ashton Kutcher|Judy Garland
-Gwyneth Paltrow|Ron Perlman
-Ben Affleck|Liza Minnelli
-Casey Affleck|Julie Andrews
-Jennifer Garner|Vincent Price
-Hilary Swank|Rutger Hauer
-Kirsten Dunst|Max von Sydow
-Amanda Seyfried|Benicio del Toro
-Lily Collins|Ewan McGregor
-Lily James|Jeff Bridges
-Jeff Goldblum|Selena Gomez
-Sam Neill|Hailee Steinfeld
-Laura Dern|Jet Li
-Chow Yun-fat|Kate Beckinsale
-Tony Leung|Milla Jovovich
-Ken Watanabe|Jessica Biel
-Hiroyuki Sanada|Carey Mulligan
-Toshiro Mifune|Kristen Bell
-Alain Delon|Mindy Kaling
-Jean-Paul Belmondo|Elliot Page
-Louis de Funès|Jennifer Connelly
-Lando Buzzanca|Pilar Fogliati
-Enrico Montesano|Greta Scarano
-Jerry Calà|Valentina Lodovini
-Vittorio De Sica|Serena Rossi
-Franco Franchi|Ilenia Pastorelli
-Ciccio Ingrassia|Anna Foglietta
-Walter Chiari|Kasia Smutniak
-Raimondo Vianello|Paola Minaccioni
-Sandra Mondaini|Marco D'Amore
-Monica Guerritore|Salvatore Esposito
-Isabella Rossellini|Francesco Montanari
-Mariangela Melato|Edoardo Pesce
-Giulietta Masina|Pietro Castellitto
-Virna Lisi|Nicolas Maupas
-Silvana Mangano|Giuseppe Maggio
-Lea Massari|Ludovico Tersigni
-Valeria Marini|Luigi Lo Cascio
-Anna Valle|Fabrizio Gifuni
-Cesare Bocci|Martina Stella
-Gabriella Pession|Remo Girone
-Vanessa Incontrada|Giorgio Faletti
-Giorgio Pasotti|Luisa Ranieri
-Elena Sofia Ricci|Alessandro Haber
-Carolina Crescentini|Ninetto Davoli
-Claudia Gerini|Leo Gullotta
-Valentina Cervi|Carlo Buccirosso
-Barbara Bouchet|Biagio Izzo
-Edwige Fenech|Peppe Barra
-Gloria Guida|Nino D'Angelo
-Margaret Qualley|Telly Savalas
-Emma Roberts|Yul Brynner
-Chloë Grace Moretz|Peter Falk
-Dakota Johnson|Spencer Tracy
-Dakota Fanning|Orson Welles
-Elizabeth Olsen|Gene Wilder
-Brie Larson|Mel Brooks
-Hilary Duff|Walter Matthau
-Eva Longoria|Jack Lemmon
-Teri Hatcher|Sidney Poitier
-Felicity Huffman|Errol Flynn
-Kerry Washington|Burt Lancaster
-Mariska Hargitay|Tony Curtis
-Jennifer Coolidge|Mark Hamill
-Jane Lynch|Carrie Fisher
-Alyson Hannigan|Ernest Borgnine
-Sarah Michelle Gellar|Lon Chaney
-Neve Campbell|Clark Gable
-Courtney Love|Henry Fonda
-Kate Bosworth|Peter O'Toole
-Mira Sorvino|Omar Sharif
-Rosamund Pike|Martin Sheen
-Gemma Arterton|Charlie Sheen
-Kristin Scott Thomas|Emilio Estevez
-Sienna Miller|Rob Lowe
-Jessica Alba|Patrick Dempsey
-Jennifer Hudson|Michael Keaton
-Diane Kruger|Val Kilmer
-Hugh Jackman|Shirley MacLaine
-Jamie Dornan|Angela Lansbury
-Dylan O'Brien|Bette Midler
-Shia LaBeouf|Barbra Streisand
-Josh Hutcherson|Debbie Reynolds
-Liam Hemsworth|Joan Crawford
-Taron Egerton|Lana Turner
-Richard Madden|Jean Harlow
-Ezra Miller|Mae West
-Miles Teller|Lillian Gish
-Nicholas Hoult|Olivia de Havilland
-Jonah Hill|Ginger Rogers
-Josh Brolin|Jessica Walter
-Jodie Comer|Ruth Gordon
-Ruth Wilson|Lee Van Cleef
-Emma Corrin|Eli Wallach
-Phoebe Waller-Bridge|Klaus Kinski
-Gillian Anderson|Bela Lugosi
-David Duchovny|Kathy Bates
-Tim Robbins|Dolly Parton
+Leonardo DiCaprio|Barbara D'Urso
+Brad Pitt|Checco Zalone
+Tom Cruise|Mara Venier
+Angelina Jolie|Fiorello
+Julia Roberts|Lino Banfi
+Will Smith|Raffaella Carrà
+Robert De Niro|Laura Pausini
+Jim Carrey|Sophia Loren
+Sylvester Stallone|Carlo Conti
+Tom Hanks|Belén Rodríguez
+Scarlett Johansson|Paolo Bonolis
+Margot Robbie|Christian De Sica
+Zendaya|Pippo Baudo
+Jackie Chan|Antonella Clerici
+Dwayne Johnson|Michelle Hunziker
+Morgan Freeman|Chiara Ferragni
+Harrison Ford|Ilary Blasi
+Meryl Streep|Fedez
+Robert Downey Jr.|Elodie
+Emma Watson|Vasco Rossi
+Charlie Chaplin|Ultimo
+Marilyn Monroe|Fabio Fazio
+Beyoncé|Massimo Boldi
+Madonna|Gianni Morandi
+Michael Jackson|Mina
+Taylor Swift|Renato Zero
+Roberto Benigni|Kim Kardashian
+Totò|Shakira
+Monica Bellucci|Mr. Bean
+Pierfrancesco Favino|Paris Hilton
+Carlo Verdone|Jennifer Lopez
+Paola Cortellesi|Eminem
+Luca Argentero|Ed Sheeran
+Claudio Bisio|Dua Lipa
+Aldo Giovanni e Giacomo|Harry Styles
+Bud Spencer|Miley Cyrus
+Adriano Celentano|Tom Holland
+Eros Ramazzotti|Hugh Grant
+Andrea Bocelli|Jason Momoa
+Måneskin|Penélope Cruz
+Amadeus|Timothée Chalamet
+Gerry Scotti|Henry Cavill
+Maria De Filippi|Ryan Gosling
+Alessandro Siani|Anne Hathaway
+Diego Abatantuono|Kate Winslet
+Paolo Villaggio|Cher
+Marcello Mastroianni|Britney Spears
+Anna Magnani|Justin Bieber
+Jennifer Lawrence|Giorgio Panariello
+Ryan Reynolds|Leonardo Pieraccioni
 `},
 oggetti: { nome: "Oggetti", colore: "--t-oggetti",
 difficile: `

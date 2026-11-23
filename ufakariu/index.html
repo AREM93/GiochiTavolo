@@ -226,7 +226,9 @@ button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); ou
 .wbox b { display: block; font-size: 20px; word-break: break-word; }
 .timer { font-family: var(--font-display); font-size: 40px; font-variant-numeric: tabular-nums; line-height: 1; }
 .timer-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.timer-row .btn { width: auto; min-height: 44px; padding: 8px 18px; font-size: 15px; }
+.timer-row { align-items: flex-end; flex-wrap: wrap; }
+.timer-btns { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.timer-row .btn { width: auto; min-height: 44px; padding: 8px 16px; font-size: 15px; }
 </style>
 </head>
 <body>
@@ -258,7 +260,7 @@ const S = {
   nameIdx: 0,
   roles: [], theme: null, wordC: "", wordI: "",
   revealIdx: 0, flipped: false,
-  alive: [], starter: 0,
+  alive: [], order: [], round: 1,
   overlay: null, // {type, ...}
   winner: null,
   usate: new Set(sessGet()),   // parole già uscite in questa sessione di gioco
@@ -304,10 +306,21 @@ function dealRound() {
 
   S.alive = Array(n).fill(true);
   S.revealIdx = 0; S.flipped = false; S.winner = null;
-  // chi inizia: mai l'omino bianco
-  const candidates = [...Array(n).keys()].filter(i => roles[i] !== "bianco");
-  S.starter = pick(candidates);
+  S.round = 1;
+  newOrder();
   stopTimer(); S.timer.left = 0;
+}
+
+// Ordine di parola casuale tra chi è ancora in gioco; non inizia mai un omino bianco (se possibile).
+function newOrder() {
+  const vivi = shuffle([...Array(S.n).keys()].filter(i => S.alive[i]));
+  const k = vivi.findIndex(i => S.roles[i] !== "bianco");
+  if (k > 0) vivi.unshift(vivi.splice(k, 1)[0]);
+  S.order = vivi;
+}
+// Fine della discussione: nuovo round, nuovo ordine, timer azzerato.
+function newDiscussion() {
+  stopTimer(); S.timer.left = 0; S.round++; newOrder();
 }
 
 function wordFor(i) {
@@ -328,7 +341,8 @@ function checkWinner() {
 /* ===================== TIMER ===================== */
 function startTimer(sec) {
   stopTimer();
-  S.timer.left = sec; S.timer.running = true;
+  if (sec) S.timer.left = sec;      // senza secondi: riprende da dove era in pausa
+  S.timer.running = true;
   S.timer.id = setInterval(() => {
     S.timer.left--;
     const el = $("#timer"); if (el) el.textContent = fmt(S.timer.left);
@@ -522,18 +536,25 @@ V.pass = () => {
 
 V.play = () => {
   const n = S.n;
-  const order = [...Array(n).keys()].map(k => (S.starter + k) % n).filter(i => S.alive[i]);
+  const order = S.order.filter(i => S.alive[i]);
+  const tm = S.timer;
+  const timerBtn = tm.running ? `<button class="btn ghost" data-act="timer-pause">Pausa</button>`
+    : tm.left > 0 ? `<button class="btn ghost" data-act="timer-resume">Riprendi</button>`
+    : `<button class="btn ghost" data-act="timer-start">Avvia 2:00</button>`;
   const t = TEMI[S.theme];
   return `
 <section class="screen">
   <div class="top">${brand()}${S.mode === "buio" ? `<span class="tag" style="--c:var(--muted)">Tema segreto</span>` : `<span class="tag" style="--c:${themeColor(S.theme)}">${esc(t.nome)}</span>`}</div>
   <div class="panel">
-    <span class="label">Inizia</span>
+    <div class="row-between"><span class="label">Inizia</span><span class="step">Round ${S.round}</span></div>
     <div class="starter">${avatar(order[0])}<div style="min-width:0"><div class="h2" style="font-size:26px;word-break:break-word">${esc(S.names[order[0]])}</div>
     <p class="order">Poi: ${order.slice(1).map(i => esc(S.names[i])).join(" → ")}</p></div></div>
     <div class="timer-row">
-      <div><span class="label">Discussione</span><div class="timer" id="timer">${fmt(S.timer.left)}</div></div>
-      ${S.timer.running ? `<button class="btn ghost" data-act="timer-stop">Ferma</button>` : `<button class="btn ghost" data-act="timer-start">Avvia 2:00</button>`}
+      <div><span class="label">${tm.running ? "Discussione" : tm.left > 0 ? "In pausa" : "Discussione"}</span><div class="timer" id="timer">${fmt(tm.left)}</div></div>
+      <div class="timer-btns">
+        ${timerBtn}
+        <button class="btn" data-act="end-discussion">Termina discussione</button>
+      </div>
     </div>
   </div>
   <div class="row-between"><span class="label">Votate: tocca chi eliminare</span><span class="step">${S.alive.filter(Boolean).length} in gioco</span></div>
@@ -591,7 +612,7 @@ O.rules = () => `
     <li><b>Preparazione.</b> Da 4 a 10 giocatori. All'inizio scegliete quanti impostori e quanti omini bianchi: serve almeno uno dei due, e i civili devono essere più di loro.</li>
     <li><b>Le parole.</b> I civili ricevono tutti la stessa parola. L'impostore, a seconda della modalità, riceve una parola diversa ma collegata (sapendo o non sapendo di essere l'impostore), oppure solo il tema, oppure niente del tutto.</li>
     <li><b>Difficoltà.</b> In <b>facile</b> la parola dell'impostore è lontana da quella dei civili e si sgama presto. In <b>difficile</b> le due parole sono quasi uguali. L'omino bianco non riceve niente.</li>
-    <li><b>Il giro.</b> Partendo da chi indica l'app, ognuno dice una sola parola o una breve frase legata alla sua parola, senza dirla.</li>
+    <li><b>Il giro.</b> L'app sceglie a caso l'ordine di parola e lo cambia a ogni nuova discussione. Partendo da chi indica, ognuno dice una sola parola o una breve frase legata alla sua parola, senza dirla.</li>
     <li><b>Il voto.</b> Dopo uno o due giri discutete e votate chi eliminare. Toccate il suo nome per scoprire il ruolo.</li>
     <li><b>L'omino bianco.</b> Se viene eliminato può provare a indovinare la parola dei civili: se ci riesce vince lui.</li>
     <li><b>Chi vince.</b> I civili vincono se eliminano tutti gli impostori e gli omini bianchi. Impostori e omini bianchi vincono se arrivano a essere tanti quanti i civili rimasti.</li>
@@ -693,7 +714,9 @@ document.addEventListener("click", (e) => {
       else go("play");
       break;
     case "timer-start": startTimer(120); break;
-    case "timer-stop": stopTimer(); render(); break;
+    case "timer-pause": stopTimer(); render(); break;
+    case "timer-resume": startTimer(); break;
+    case "end-discussion": newDiscussion(); render(); window.scrollTo(0, 0); break;
     case "vote": S.overlay = { type: "vote", i: +el.dataset.i }; render(); break;
     case "eliminate": {
       const i = +el.dataset.i;
@@ -719,7 +742,7 @@ document.addEventListener("keydown", (e) => {
 function afterOut() {
   const w = checkWinner();
   if (w) { S.winner = w; stopTimer(); go("end"); }
-  else { S.overlay = null; render(); }
+  else { S.overlay = null; newDiscussion(); render(); }
 }
 
 fixRuoli();
