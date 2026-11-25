@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plancia Duello</title>
+<meta name="theme-color" content="#0b0d1c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Figtree:wght@400;600;800&display=swap">
+<style>
+/* Plancia da duello: campo di un giocatore, due file (4 zone sopra, 5 sotto) su un tappeto "arcano" blu notte e oro. */
+:root {
+  color-scheme: dark;
+  --bg: #0b0d1c;
+  --mat: #121633;
+  --mat-2: #1b1f48;
+  --gold: #d9b25f;
+  --gold-soft: rgba(217, 178, 95, .35);
+  --gold-faint: rgba(217, 178, 95, .12);
+  --monster: #e0794f;   /* fila superiore */
+  --spell: #3fb8a5;     /* fila inferiore */
+  --fg: #f1ead8;
+  --muted: #9b97b8;
+  --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+  --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --zone: min(17vw, 150px);
+  --gap: min(2.2vw, 18px);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  min-height: 100vh;
+  background: radial-gradient(ellipse at 50% 30%, #1a1d3d 0%, var(--bg) 70%);
+  color: var(--fg);
+  font-family: var(--font-body);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 20px 16px 32px;
+  -webkit-tap-highlight-color: transparent;
+}
+header { text-align: center; margin-bottom: 14px; }
+h1 {
+  font-family: var(--font-display); font-weight: 900; letter-spacing: .18em;
+  font-size: clamp(20px, 4.5vw, 34px); margin: 0;
+  background: linear-gradient(180deg, #f6dc9a, var(--gold) 55%, #8a6a2c);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+/* --- Tappeto --- */
+.mat {
+  position: relative;
+  padding: calc(var(--gap) * 2.2) calc(var(--gap) * 1.6);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 50% 50%, var(--mat-2) 0%, var(--mat) 65%),
+    var(--mat);
+  border: 1px solid var(--gold-soft);
+  box-shadow: 0 0 0 6px #0e1129, 0 0 0 7px var(--gold-faint), 0 30px 60px rgba(0,0,0,.55), inset 0 0 80px rgba(0,0,0,.5);
+  overflow: hidden;
+  max-width: 100%;
+}
+.sigil {
+  position: absolute; inset: 0; margin: auto;
+  width: 120%; height: 120%; left: -10%; top: -10%;
+  pointer-events: none; opacity: .5;
+}
+.corner { position: absolute; width: 38px; height: 38px; border: 2px solid var(--gold-soft); }
+.corner.tl { top: 10px; left: 10px; border-right: 0; border-bottom: 0; border-top-left-radius: 10px; }
+.corner.tr { top: 10px; right: 10px; border-left: 0; border-bottom: 0; border-top-right-radius: 10px; }
+.corner.bl { bottom: 10px; left: 10px; border-right: 0; border-top: 0; border-bottom-left-radius: 10px; }
+.corner.br { bottom: 10px; right: 10px; border-left: 0; border-top: 0; border-bottom-right-radius: 10px; }
+
+.row { position: relative; display: flex; justify-content: center; gap: var(--gap); }
+.row + .row { margin-top: calc(var(--gap) * 1.8); }
+.row-label {
+  position: relative; text-align: center; font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(9px, 1.6vw, 12px); letter-spacing: .3em; text-transform: uppercase;
+  margin: 0 0 calc(var(--gap) * .7);
+}
+.row-label.monster { color: var(--monster); }
+.row-label.spell { color: var(--spell); margin-top: calc(var(--gap) * 1.6); }
+.divider {
+  position: relative; height: 1px; margin: calc(var(--gap) * 1.4) 8% 0;
+  background: linear-gradient(90deg, transparent, var(--gold-soft), transparent);
+}
+
+/* --- Zone --- */
+.zone {
+  --c: var(--monster);
+  position: relative; width: var(--zone); aspect-ratio: 1;
+  border-radius: 12px; border: 1.5px solid color-mix(in srgb, var(--c) 70%, transparent);
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--c) 16%, transparent) 0%, transparent 70%),
+    rgba(5, 7, 20, .55);
+  box-shadow: inset 0 0 18px color-mix(in srgb, var(--c) 22%, transparent);
+  display: grid; place-items: center;
+  cursor: pointer; padding: 0; color: inherit; font: inherit;
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+.zone.spell { --c: var(--spell); }
+.zone:hover { box-shadow: inset 0 0 22px color-mix(in srgb, var(--c) 40%, transparent), 0 0 14px color-mix(in srgb, var(--c) 35%, transparent); }
+.zone:active { transform: scale(.97); }
+.zone:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.zone::before {
+  /* ornamento interno */
+  content: ""; position: absolute; inset: 9%; border-radius: 8px;
+  border: 1px dashed color-mix(in srgb, var(--c) 40%, transparent);
+}
+.glyph { width: 36%; opacity: .55; color: var(--c); }
+.num {
+  position: absolute; bottom: 5%; right: 8%; font-family: var(--font-display);
+  font-size: clamp(8px, 1.4vw, 11px); color: color-mix(in srgb, var(--c) 80%, white);
+  opacity: .7;
+}
+
+/* --- Carte (generate in CSS) --- */
+.card {
+  position: absolute; height: 88%; aspect-ratio: 59 / 86; border-radius: 6px;
+  box-shadow: 0 6px 14px rgba(0,0,0,.6);
+  transition: transform .25s ease;
+  overflow: hidden;
+}
+.card.def { transform: rotate(90deg); }
+.card.back {
+  background:
+    radial-gradient(circle at 50% 50%, #e5c27a 0 7%, transparent 7.5%),
+    radial-gradient(circle at 50% 50%, transparent 0 18%, #c8963f 18.5% 20%, transparent 20.5%),
+    repeating-conic-gradient(from 0deg at 50% 50%, #5b2a1e 0 15deg, #3a1913 15deg 30deg);
+  border: 3px solid #2a120d; outline: 1px solid #c8963f; outline-offset: -6px;
+}
+.card.front {
+  background: linear-gradient(160deg, color-mix(in srgb, var(--c) 85%, #fff) 0%, var(--c) 45%, color-mix(in srgb, var(--c) 55%, #000) 100%);
+  border: 3px solid #1a1308;
+  display: flex; flex-direction: column; padding: 6%;
+  gap: 5%;
+}
+.card.front .t { height: 11%; background: rgba(255,250,235,.85); border-radius: 2px; }
+.card.front .art {
+  flex: 1; border: 2px solid #1a1308; border-radius: 2px;
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.55), transparent 40%),
+              linear-gradient(135deg, #2b2f6b, #6b3a7a 60%, #d9b25f);
+}
+.card.front .txt { height: 26%; background: rgba(255,250,235,.85); border-radius: 2px; }
+
+/* --- Pannello inferiore --- */
+.bar {
+  display: flex; flex-wrap: wrap; gap: 12px 20px; justify-content: center; align-items: center;
+  margin-top: 22px; max-width: 760px;
+}
+.lp {
+  display: flex; align-items: center; gap: 8px;
+  border: 1px solid var(--gold-soft); border-radius: 999px; padding: 6px 8px 6px 16px;
+  background: rgba(18, 22, 51, .8);
+}
+.lp span { font-family: var(--font-display); font-size: 12px; letter-spacing: .2em; color: var(--muted); }
+.lp output { font-family: var(--font-display); font-weight: 900; font-size: 22px; min-width: 70px; text-align: center; color: var(--gold); font-variant-numeric: tabular-nums; }
+button.b {
+  font: 600 14px var(--font-body); color: var(--fg); background: #22265a;
+  border: 1px solid var(--gold-soft); border-radius: 999px; padding: 8px 14px; cursor: pointer;
+}
+button.b:hover { background: #2c3170; }
+.hint { width: 100%; text-align: center; color: var(--muted); font-size: 13px; }
+.legend { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; font-size: 12px; color: var(--muted); width: 100%; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+@media (max-width: 520px) {
+  :root { --zone: calc((100vw - 32px - 2 * 18px - 4 * 6px) / 5); --gap: 6px; }
+  .mat { padding: 26px 18px; border-radius: 16px; }
+  .corner { width: 22px; height: 22px; }
+  .lp { flex-wrap: wrap; justify-content: center; border-radius: 18px; padding: 10px; gap: 6px; }
+  .lp span { width: 100%; text-align: center; }
+  .lp output { min-width: 64px; font-size: 20px; }
+  .lp button.b { padding: 7px 10px; font-size: 13px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>CAMPO DI DUELLO</h1>
+  <div class="sub">Tocca una zona per evocare, coprire o mettere in difesa una carta</div>
+</header>
+
+<main class="mat" aria-label="Plancia di gioco">
+  <svg class="sigil" viewBox="0 0 400 400" aria-hidden="true">
+    <g fill="none" stroke="#d9b25f" stroke-width=".7">
+      <circle cx="200" cy="200" r="170" stroke-opacity=".35"/>
+      <circle cx="200" cy="200" r="160" stroke-opacity=".2" stroke-dasharray="2 6"/>
+      <circle cx="200" cy="200" r="110" stroke-opacity=".3"/>
+      <circle cx="200" cy="200" r="60" stroke-opacity=".25"/>
+      <polygon points="200,40 338,280 62,280" stroke-opacity=".22"/>
+      <polygon points="200,360 62,120 338,120" stroke-opacity=".22"/>
+      <g stroke-opacity=".15">
+        <line x1="200" y1="20" x2="200" y2="380"/>
+        <line x1="20" y1="200" x2="380" y2="200"/>
+        <line x1="73" y1="73" x2="327" y2="327"/>
+        <line x1="327" y1="73" x2="73" y2="327"/>
+      </g>
+    </g>
+  </svg>
+  <span class="corner tl"></span><span class="corner tr"></span>
+  <span class="corner bl"></span><span class="corner br"></span>
+
+  <div class="row-label monster">Zona Creature</div>
+  <div class="row" id="row-top"></div>
+  <div class="divider"></div>
+  <div class="row-label spell">Zona Magie &amp; Trappole</div>
+  <div class="row" id="row-bottom"></div>
+</main>
+
+<div class="bar">
+  <div class="lp">
+    <span>PUNTI VITA</span>
+    <button class="b" data-lp="-1000" aria-label="Meno mille">−1000</button>
+    <button class="b" data-lp="-100" aria-label="Meno cento">−100</button>
+    <output id="lp">8000</output>
+    <button class="b" data-lp="100" aria-label="Più cento">+100</button>
+    <button class="b" data-lp="1000" aria-label="Più mille">+1000</button>
+  </div>
+  <button class="b" id="reset">Svuota campo</button>
+  <div class="legend">
+    <span><i style="background:var(--monster)"></i>Creature: vuota → scoperta → coperta → difesa</span>
+    <span><i style="background:var(--spell)"></i>Magie/Trappole: vuota → scoperta → coperta</span>
+  </div>
+</div>
+
+<script>
+const GLYPH_MONSTER = '<svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 3 21 3v6.5L10 20.5 3.5 14z"/><path d="m6 17-3 3"/><path d="m8 15 4 4"/></svg>';
+const GLYPH_SPELL = '<svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5 14.6 9.4 21.5 12l-6.9 2.6L12 21.5l-2.6-6.9L2.5 12l6.9-2.6z"/><circle cx="12" cy="12" r="2"/></svg>';
+
+const STATES = {
+  monster: ['vuota', 'scoperta', 'coperta', 'difesa'],
+  spell: ['vuota', 'scoperta', 'coperta'],
+};
+const zones = [];
+
+function build(rowId, count, kind) {
+  const row = document.getElementById(rowId);
+  for (let i = 0; i < count; i++) {
+    const z = document.createElement('button');
+    z.className = 'zone ' + kind;
+    z.dataset.kind = kind;
+    z.dataset.state = '0';
+    z.addEventListener('click', () => cycle(z));
+    row.appendChild(z);
+    zones.push(z);
+    z._n = i + 1;
+    render(z);
+  }
+}
+
+function render(z) {
+  const kind = z.dataset.kind;
+  const st = STATES[kind][+z.dataset.state];
+  const label = (kind === 'monster' ? 'Creatura ' : 'Magia/Trappola ') + z._n + ': ' + st;
+  z.setAttribute('aria-label', label);
+  let card = '';
+  if (st === 'scoperta') card = '<div class="card front"><div class="t"></div><div class="art"></div><div class="txt"></div></div>';
+  if (st === 'coperta') card = '<div class="card back"></div>';
+  if (st === 'difesa') card = '<div class="card back def"></div>';
+  z.innerHTML = (kind === 'monster' ? GLYPH_MONSTER : GLYPH_SPELL) + '<span class="num">' + z._n + '</span>' + card;
+}
+
+function cycle(z) {
+  const n = STATES[z.dataset.kind].length;
+  z.dataset.state = String((+z.dataset.state + 1) % n);
+  render(z);
+}
+
+build('row-top', 4, 'monster');
+build('row-bottom', 5, 'spell');
+
+let lp = 8000;
+const lpOut = document.getElementById('lp');
+document.querySelectorAll('[data-lp]').forEach(b => b.addEventListener('click', () => {
+  lp = Math.max(0, lp + Number(b.dataset.lp));
+  lpOut.textContent = lp;
+}));
+document.getElementById('reset').addEventListener('click', () => {
+  zones.forEach(z => { z.dataset.state = '0'; render(z); });
+  lp = 8000; lpOut.textContent = lp;
+});
+</script>
+</body>
+</html>

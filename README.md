@@ -13,3 +13,11 @@ Aprilo nel browser del telefono e passalo di mano in mano.
 - Difficoltà facile o difficile, scelta all'inizio.
 - Ordine di parola casuale, ricambiato a ogni discussione; timer con pausa e pulsante "Termina discussione".
 - Voto con eliminazione, ruolo svelato, tentativo dell'omino bianco, timer di discussione.
+
+## Plancia Duello
+
+Plancia per giochi di carte in stile duello: `plancia/index.html`.
+
+- Due file di zone: sopra 4 (Zona Creature), sotto 5 (Zona Magie & Trappole).
+- Tocca una zona per cambiare la carta: creature vuota → scoperta → coperta → difesa (ruotata); magie/trappole vuota → scoperta → coperta.
+- Contatore dei punti vita (parte da 8000) e pulsante "Svuota campo".
